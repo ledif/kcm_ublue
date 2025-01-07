@@ -1,0 +1,13 @@
+{
+    "KPlugin": {
+        "Description": "Configure Aurora",
+        "FormFactors": [
+            "desktop"
+        ],
+        "Icon": "preferences-system-time",
+        "Name": "Aurora Settings"
+    },
+    "X-KDE-Keywords": "aurora,ublue,universal blue,updates,rebase",
+    "X-KDE-System-Settings-Parent-Category": "system"
+}
+
