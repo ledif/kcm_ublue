@@ -1,18 +1,18 @@
 build:
   podman build -t kcm_ublue_dev .
-  podman run -it --volume $PWD:/app:Z -w /app kcm_ublue_dev just containerized-build
-  cat build/prefix.sh | sed "s|/app|$PWD|g" > prefix/build.sh
+  podman run -it --volume $PWD:/app:Z -w /app kcm_ublue_dev just _containerized-build
+  cat build/prefix.sh | sed "s|/app|$PWD|g" > prefix/env.sh
   rm -rf build
 
-launch:
+run:
   #!/bin/bash
-  . prefix/build.sh
+  . prefix/env.sh
   systemsettings kcm_ublue
 
-containerized-build:
+_containerized-build:
   #!/bin/bash
   rm -rf prefix build
   cd /app
   cmake -B build -DCMAKE_INSTALL_PREFIX=/app/prefix
-  cmake --build build
+  cmake --build build -j8
   cmake --install build

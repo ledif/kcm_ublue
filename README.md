@@ -4,5 +4,5 @@
 To build and run:
 ```bash
 just build
-just launch
+just run
 ```
