@@ -32,6 +32,10 @@ KCMUtils.SimpleKCM {
             checked: !kcm.updatesSettings.useUnattendedUpdates
         }
 
+        Controls.ComboBox {
+            model: ["Weekly", "Daily"]
+        }
+
         RowLayout {
             spacing: Kirigami.Units.smallSpacing
 
@@ -60,6 +64,9 @@ KCMUtils.SimpleKCM {
             Kirigami.FormData.isSection: true
         }
 
+        Item {
+            height: Kirigami.Units.smallSpacing
+        }
 
         Controls.CheckBox {
             Kirigami.FormData.label: i18nc("@option:check", "Hardware enablement:")
@@ -68,10 +75,8 @@ KCMUtils.SimpleKCM {
             onToggled: settings.inhibitScreen = !checked
         }
 
-        Controls.CheckBox {
-            text: i18nc("@option:check", "NVIDIA (open)")
-            checked: !settings.inhibitScreen
-            onToggled: settings.inhibitScreen = !checked
+        Controls.ComboBox {
+            model: ["Open", "Closed"]
         }
 
         Controls.CheckBox {
@@ -85,6 +90,22 @@ KCMUtils.SimpleKCM {
             checked: !settings.inhibitScreen
             onToggled: settings.inhibitScreen = !checked
         }
+
+        Kirigami.Separator {
+            Kirigami.FormData.isSection: true
+        }
+
+        Item {
+            height: Kirigami.Units.smallSpacing
+        }
+
+        Controls.CheckBox {
+            Kirigami.FormData.label: i18nc("@option:check", "Developer experience:")
+            text: i18n("Enabled")
+            checked: !settings.isPrivate
+            onToggled: settings.isPrivate = !checked
+        }
+
 
     }
 }
