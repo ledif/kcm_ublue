@@ -4,18 +4,6 @@
 
 K_PLUGIN_CLASS_WITH_JSON(UBlueSettings, "kcm_ublue.json")
 
-BootcImageVariantInfo getVariantInfo()
-{
-  // TODO
-  return BootcImageVariantInfo{};
-}
-
-UpdateStream getUpdateStream()
-{
-  // TODO
-  return UpdateStream::stableWeekly;
-}
-
 bool isUpdateServiceEnabled()
 {
   // TODO
@@ -24,8 +12,7 @@ bool isUpdateServiceEnabled()
 
 UBlueSettings::UBlueSettings(QObject *parent, const KPluginMetaData &data)
     : KQuickConfigModule(parent, data)
-    , variantInfo(getVariantInfo())
-    , updateStream(getUpdateStream())
+    , variantInfo(BootcImageVariantInfo::loadFromDisk())
     , updatesEnabled(isUpdateServiceEnabled())
 {
     setButtons(Help | Apply | Default);

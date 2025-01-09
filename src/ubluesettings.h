@@ -1,22 +1,7 @@
 #pragma once
 
 #include <KQuickConfigModule>
-
-enum class HWEFlag
-{
-  nvidia, nvidiaOpen, asus, surface
-};
-
-enum class UpdateStream
-{
-  latest, stableDaily, stableWeekly
-};
-
-struct BootcImageVariantInfo
-{
-  std::vector<HWEFlag> hweFlags;
-  bool devExperience = false;
-};
+#include "imagevariant.h"
 
 class UBlueSettings : public KQuickConfigModule
 {
@@ -31,7 +16,6 @@ public:
 
 private:
     BootcImageVariantInfo variantInfo;
-    UpdateStream updateStream;
     bool updatesEnabled;
 };
 

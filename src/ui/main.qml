@@ -24,6 +24,14 @@ KCMUtils.SimpleKCM {
             height: Kirigami.Units.smallSpacing
         }
 
+        Controls.CheckBox {
+            Kirigami.FormData.label: i18nc("@option:check", "System updates:")
+            text: i18n("Enabled")
+            checked: kcm.updatesEnabled
+            onToggled: kcm.updatesEnabled = !checked
+        }
+
+
         Controls.RadioButton {
             Kirigami.FormData.label: i18n("Update stream:")
             text: i18n("Stable")
@@ -50,14 +58,6 @@ KCMUtils.SimpleKCM {
             Kirigami.ContextualHelpButton {
                 toolTipText: xi18nc("@info", "Software updates will be downloaded automatically when they become available. Updates for applications will be installed immediately, while system updates will be installed the next time the computer is restarted.")
             }
-        }
-
-
-        Controls.CheckBox {
-            Kirigami.FormData.label: i18nc("@option:check", "System updates:")
-            text: i18n("Enabled")
-            checked: kcm.updatesEnabled
-            onToggled: kcm.updatesEnabled = !checked
         }
 
         Kirigami.Separator {
