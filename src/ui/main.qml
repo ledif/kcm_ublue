@@ -56,8 +56,8 @@ KCMUtils.SimpleKCM {
         Controls.CheckBox {
             Kirigami.FormData.label: i18nc("@option:check", "System updates:")
             text: i18n("Enabled")
-            checked: !settings.isPrivate
-            onToggled: settings.isPrivate = !checked
+            checked: kcm.updatesEnabled
+            onToggled: kcm.updatesEnabled = !checked
         }
 
         Kirigami.Separator {
