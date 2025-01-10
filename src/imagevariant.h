@@ -20,16 +20,21 @@ public:
   bool surface = false;
 };
 
-enum class UpdateStream
-{
-  latest, stableDaily, stableWeekly, unknown
-};
 
 class ImageVariantInfo : public QObject
 {
+    enum UpdateStream
+    {
+      unknown = 0,
+      stableWeekly = 1,
+      stableDaily = 2,
+      latest = 3,
+    };
+
     Q_OBJECT
     Q_PROPERTY(bool devExperience MEMBER devExperience)
     Q_PROPERTY(HWEFlagSet* hweFlags READ getHWEFlags WRITE setHWEFlags)
+    Q_PROPERTY(UpdateStream updateStream MEMBER updateStream)
 
 public:
     static ImageVariantInfo* loadFromDisk();
@@ -40,5 +45,5 @@ public:
 private:
     std::unique_ptr<HWEFlagSet> hweFlags;
     bool devExperience = false;
-    UpdateStream updateStream;
+    UpdateStream updateStream = unknown;
 };

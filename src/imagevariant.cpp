@@ -43,13 +43,12 @@ ImageVariantInfo* ImageVariantInfo::loadFromDisk()
     ImageVariantInfo* info = new ImageVariantInfo;
 
     // Update stream
-    info->updateStream = UpdateStream::unknown;
-    if (imageName == QString::fromLatin1("stable"))
-        info->updateStream = UpdateStream::stableWeekly;
-    else if (imageName == QString::fromLatin1("stable-daily"))
-        info->updateStream = UpdateStream::stableDaily;
-    else if (imageName == QString::fromLatin1("latest"))
-        info->updateStream = UpdateStream::latest;
+    if (imageStream == QString::fromLatin1("stable"))
+        info->updateStream = stableWeekly;
+    else if (imageStream == QString::fromLatin1("stable-daily"))
+        info->updateStream = stableDaily;
+    else if (imageStream == QString::fromLatin1("latest"))
+        info->updateStream = latest;
 
     info->hweFlags.reset(new HWEFlagSet);
 

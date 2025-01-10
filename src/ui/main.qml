@@ -24,6 +24,10 @@ KCMUtils.SimpleKCM {
             height: Kirigami.Units.smallSpacing
         }
 
+        Controls.ButtonGroup {
+          id: updateStreamGroup
+        }
+
         Controls.CheckBox {
             Kirigami.FormData.label: i18nc("@option:check", "System updates:")
             text: i18n("Enabled")
@@ -37,7 +41,7 @@ KCMUtils.SimpleKCM {
             text: i18n("Stable")
 
             Controls.ButtonGroup.group: updateStreamGroup
-            checked: !kcm.updatesSettings.useUnattendedUpdates
+            checked: kcm.imageVariant.updateStream == 1 || kcm.imageVariant.updateStream == 2
         }
 
         Controls.ComboBox {
@@ -52,7 +56,7 @@ KCMUtils.SimpleKCM {
                 text: i18n("Latest")
 
                 Controls.ButtonGroup.group: updateStreamGroup
-                checked: kcm.updatesSettings.useUnattendedUpdates
+                checked: kcm.imageVariant.updateStream == 3
             }
 
             Kirigami.ContextualHelpButton {
