@@ -44,9 +44,15 @@ KCMUtils.SimpleKCM {
             checked: kcm.imageVariant.updateStream == 1 || kcm.imageVariant.updateStream == 2
         }
 
-        Controls.ComboBox {
-            model: ["Weekly", "Daily"]
-        }
+				Controls.ComboBox {
+						id: stableFrequency
+            visible: kcm.imageVariant.updateStream == 1 || kcm.imageVariant.updateStream == 2
+
+						//currentIndex: 0
+						//anchors.centerIn: parent
+
+						model: [ "Weekly", "Daily" ]
+				}
 
         RowLayout {
             spacing: Kirigami.Units.smallSpacing
@@ -57,6 +63,7 @@ KCMUtils.SimpleKCM {
 
                 Controls.ButtonGroup.group: updateStreamGroup
                 checked: kcm.imageVariant.updateStream == 3
+                onToggled: kcm.updatesEnabled = 3
             }
 
             Kirigami.ContextualHelpButton {
