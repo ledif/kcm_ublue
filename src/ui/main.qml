@@ -35,24 +35,27 @@ KCMUtils.SimpleKCM {
             onToggled: kcm.updatesEnabled = !checked
         }
 
+        RowLayout {
+            spacing: Kirigami.Units.mediumSpacing
 
-        Controls.RadioButton {
-            Kirigami.FormData.label: i18n("Update stream:")
-            text: i18n("Stable")
+            Controls.RadioButton {
+                Kirigami.FormData.label: i18n("Update stream:")
+                text: i18n("Stable")
 
-            Controls.ButtonGroup.group: updateStreamGroup
-            checked: kcm.imageVariant.updateStream == 1 || kcm.imageVariant.updateStream == 2
+                Controls.ButtonGroup.group: updateStreamGroup
+                checked: kcm.imageVariant.updateStream == 1 || kcm.imageVariant.updateStream == 2
+            }
+
+            Controls.ComboBox {
+                            id: stableFrequency
+                visible: kcm.imageVariant.updateStream == 1 || kcm.imageVariant.updateStream == 2
+
+                            //currentIndex: 0
+                            //anchors.centerIn: parent
+
+                            model: [ "Weekly", "Daily" ]
+            }
         }
-
-				Controls.ComboBox {
-						id: stableFrequency
-            visible: kcm.imageVariant.updateStream == 1 || kcm.imageVariant.updateStream == 2
-
-						//currentIndex: 0
-						//anchors.centerIn: parent
-
-						model: [ "Weekly", "Daily" ]
-				}
 
         RowLayout {
             spacing: Kirigami.Units.smallSpacing
@@ -67,7 +70,7 @@ KCMUtils.SimpleKCM {
             }
 
             Kirigami.ContextualHelpButton {
-                toolTipText: xi18nc("@info", "Software updates will be downloaded automatically when they become available. Updates for applications will be installed immediately, while system updates will be installed the next time the computer is restarted.")
+                toolTipText: xi18nc("@info", "For users who want the very latest Fedora has to offer. Daily updates with a bleeding-edge kernel.")
             }
         }
 
@@ -79,15 +82,19 @@ KCMUtils.SimpleKCM {
             height: Kirigami.Units.smallSpacing
         }
 
-        Controls.CheckBox {
+        RowLayout {
+            spacing: Kirigami.Units.mediumSpacing
             Kirigami.FormData.label: i18nc("@option:check", "Hardware enablement:")
-            text: i18nc("@option:check", "NVIDIA")
-            checked: kcm.imageVariant.hweFlags.nvidia || kcm.imageVariant.hweFlags.nvidiaOpen
-            onToggled: settings.inhibitScreen = !checked
-        }
 
-        Controls.ComboBox {
-            model: ["Open", "Closed"]
+            Controls.CheckBox {
+                text: i18nc("@option:check", "NVIDIA")
+                checked: kcm.imageVariant.hweFlags.nvidia || kcm.imageVariant.hweFlags.nvidiaOpen
+                onToggled: settings.inhibitScreen = !checked
+            }
+
+            Controls.ComboBox {
+                model: ["Open", "Closed"]
+            }
         }
 
         Controls.CheckBox {

@@ -29,9 +29,14 @@ std::pair<QString, QString> getImageNameStream()
     QJsonObject jsonObj;
     jsonObj = jsonDoc.object();
 
+    QString imageName = jsonObj.value(QString::fromLatin1("image-name")).toString();
+
     return {
-        jsonObj.value(QString::fromLatin1("image-name")).toString(),
-        jsonObj.value(QString::fromLatin1("image-branch")).toString()
+        imageName,
+        // TODO: these fields are different in Aurora vs Bazzite
+        imageName.startsWith(QString::fromLatin1("aurora")) ?
+            jsonObj.value(QString::fromLatin1("image-tag")).toString() :
+            jsonObj.value(QString::fromLatin1("image-branch")).toString()
     };
 }
 
@@ -84,4 +89,4 @@ void ImageVariantInfo::setHWEFlags(HWEFlagSet* x)
   return hweFlags.reset(x);
 }
 
-#include "imagevariant.moc"
+//#include "imagevariant.moc"
