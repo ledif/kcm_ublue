@@ -50,6 +50,9 @@ ImageVariantInfo* ImageVariantInfo::loadFromDisk()
     else if (imageName == QString::fromLatin1("latest"))
         info->updateStream = UpdateStream::latest;
 
+    if (imageName.endsWith(QString::fromLatin1("-dx")))
+      info->devExperience = true;
+
     //std::cout <<  info.updateStream << std::endl;
 
     return info;
