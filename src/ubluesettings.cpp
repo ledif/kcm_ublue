@@ -2,6 +2,8 @@
 
 #include <KPluginFactory>
 
+#include <iostream>
+
 K_PLUGIN_CLASS_WITH_JSON(UBlueSettings, "kcm_ublue.json")
 
 bool isUpdateServiceEnabled()
@@ -18,14 +20,9 @@ UBlueSettings::UBlueSettings(QObject *parent, const KPluginMetaData &data)
     setButtons(Help | Apply | Default);
 }
 
-bool UBlueSettings::getUpdatesEnabled()
+void UBlueSettings::updatesEnabledChanged()
 {
-  return updatesEnabled;
-}
-
-void UBlueSettings::setUpdatesEnabled(bool b)
-{
-  updatesEnabled = b;
+  std::cout << "updatesEnabledChanged " << this->updatesEnabled << std::endl;
 }
 
 ImageVariantInfo* UBlueSettings::getImageVariant()

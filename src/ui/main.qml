@@ -95,6 +95,10 @@ KCMUtils.SimpleKCM {
             Controls.ComboBox {
                 model: ["Open", "Closed"]
             }
+
+            Kirigami.ContextualHelpButton {
+                toolTipText: xi18nc("@info", "Open drivers are for modern NVIDIA GPUs (RTX series and GTX 16xx series+). Closed drivers are for legacy NVIDIA GPUs.")
+            }
         }
 
         Controls.CheckBox {
@@ -123,8 +127,6 @@ KCMUtils.SimpleKCM {
             checked: kcm.imageVariant.devExperience
             onToggled: kcm.imageVariant.devExperience = !checked
         }
-
-
     }
 }
 
