@@ -12,7 +12,7 @@ bool isUpdateServiceEnabled()
 
 UBlueSettings::UBlueSettings(QObject *parent, const KPluginMetaData &data)
     : KQuickConfigModule(parent, data)
-    , variantInfo(BootcImageVariantInfo::loadFromDisk())
+    , variantInfo(ImageVariantInfo::loadFromDisk())
     , updatesEnabled(isUpdateServiceEnabled())
 {
     setButtons(Help | Apply | Default);
@@ -26,6 +26,16 @@ bool UBlueSettings::getUpdatesEnabled()
 void UBlueSettings::setUpdatesEnabled(bool b)
 {
   updatesEnabled = b;
+}
+
+ImageVariantInfo* UBlueSettings::getImageVariant()
+{
+  return variantInfo.get();
+}
+
+void UBlueSettings::setImageVariant(ImageVariantInfo* x)
+{
+  variantInfo.reset(x);
 }
 
 #include "ubluesettings.moc"

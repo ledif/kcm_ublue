@@ -102,8 +102,8 @@ KCMUtils.SimpleKCM {
         Controls.CheckBox {
             Kirigami.FormData.label: i18nc("@option:check", "Developer experience:")
             text: i18n("Enabled")
-            checked: !settings.isPrivate
-            onToggled: settings.isPrivate = !checked
+            checked: kcm.imageVariant.devExperience
+            onToggled: kcm.imageVariant.devExperience = !checked
         }
 
 
