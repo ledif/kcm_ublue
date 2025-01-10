@@ -42,6 +42,7 @@ ImageVariantInfo* ImageVariantInfo::loadFromDisk()
     std::cout << "Image stream: " << imageStream.toStdString() << std::endl;
     ImageVariantInfo* info = new ImageVariantInfo;
 
+    // Update stream
     info->updateStream = UpdateStream::unknown;
     if (imageName == QString::fromLatin1("stable"))
         info->updateStream = UpdateStream::stableWeekly;
@@ -50,12 +51,38 @@ ImageVariantInfo* ImageVariantInfo::loadFromDisk()
     else if (imageName == QString::fromLatin1("latest"))
         info->updateStream = UpdateStream::latest;
 
+    info->hweFlags.reset(new HWEFlagSet);
+
+    // HWE flags
+    if (imageName.contains(QString::fromLatin1("nvidia")))
+    {
+        if (imageName.contains(QString::fromLatin1("nvidia-open")))
+          info->hweFlags->nvidiaOpen = true;
+        else
+          info->hweFlags->nvidia = true;
+    }
+
+    if (imageName.contains(QString::fromLatin1("asus")))
+      info->hweFlags->asus = true;
+
+    if (imageName.contains(QString::fromLatin1("surface")))
+      info->hweFlags->surface = true;
+
+    // Dev experience
     if (imageName.endsWith(QString::fromLatin1("-dx")))
       info->devExperience = true;
 
-    //std::cout <<  info.updateStream << std::endl;
-
     return info;
  }
+
+HWEFlagSet* ImageVariantInfo::getHWEFlags()
+{
+  return hweFlags.get();
+}
+
+void ImageVariantInfo::setHWEFlags(HWEFlagSet* x)
+{
+  return hweFlags.reset(x);
+}
 
 #include "imagevariant.moc"

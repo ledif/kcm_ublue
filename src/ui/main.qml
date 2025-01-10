@@ -71,7 +71,7 @@ KCMUtils.SimpleKCM {
         Controls.CheckBox {
             Kirigami.FormData.label: i18nc("@option:check", "Hardware enablement:")
             text: i18nc("@option:check", "NVIDIA")
-            checked: !settings.inhibitScreen
+            checked: kcm.imageVariant.hweFlags.nvidia || kcm.imageVariant.hweFlags.nvidiaOpen
             onToggled: settings.inhibitScreen = !checked
         }
 
@@ -81,13 +81,13 @@ KCMUtils.SimpleKCM {
 
         Controls.CheckBox {
             text: i18nc("@option:check", "ASUS")
-            checked: !settings.inhibitScreen
+            checked: kcm.imageVariant.hweFlags.asus
             onToggled: settings.inhibitScreen = !checked
         }
 
         Controls.CheckBox {
             text: i18nc("@option:check", "Surface")
-            checked: !settings.inhibitScreen
+            checked: kcm.imageVariant.hweFlags.surface
             onToggled: settings.inhibitScreen = !checked
         }
 
