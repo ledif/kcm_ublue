@@ -15,18 +15,18 @@ bool isUpdateServiceEnabled()
 UBlueSettings::UBlueSettings(QObject *parent, const KPluginMetaData &data)
     : KQuickConfigModule(parent, data)
 {
-    setButtons(Help | Apply);
-    load();
+  setButtons(Help | Apply);
+  load();
 }
 
 void UBlueSettings::load()
 {
-    variantInfo.reset(ImageVariantInfo::loadFromDisk());
-    updatesEnabled = isUpdateServiceEnabled();
-    currentUpdatesEnabled = updatesEnabled;
-    //currentVariantInfo.reset(variantInfo->clone());
+  variantInfo.reset(ImageVariantInfo::loadFromDisk());
+  updatesEnabled = isUpdateServiceEnabled();
+  currentUpdatesEnabled = updatesEnabled;
+  currentVariantInfo.reset(variantInfo->clone());
 
-    connect(this, &UBlueSettings::infoChanged, this, &UBlueSettings::onInfoChanged);
+  connect(this, &UBlueSettings::infoChanged, this, &UBlueSettings::onInfoChanged);
 }
 
 void UBlueSettings::onInfoChanged()

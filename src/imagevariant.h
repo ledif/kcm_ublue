@@ -17,38 +17,47 @@ public:
   bool nvidia = false;
   bool nvidiaOpen = false;
 
+  HWEFlagSet(bool hwe, bool nvidia, bool nvidiaOpen)
+    : hwe(hwe), nvidia(nvidia), nvidiaOpen(nvidiaOpen)
+  { }
+
+  HWEFlagSet* clone();
+
 Q_SIGNALS:
-    void infoChanged();
+  void infoChanged();
 };
 
 class UBlueSettings;
 
 class ImageVariantInfo : public QObject
 {
-    enum UpdateStream
-    {
-      unknown = 0,
-      stableWeekly = 1,
-      stableDaily = 2,
-      latest = 3,
-    };
+  enum UpdateStream
+  {
+    unknown = 0,
+    stableWeekly = 1,
+    stableDaily = 2,
+    latest = 3,
+  };
 
-    Q_OBJECT
-    Q_PROPERTY(bool devExperience MEMBER devExperience NOTIFY infoChanged)
-    Q_PROPERTY(HWEFlagSet* hweFlags READ getHWEFlags WRITE setHWEFlags NOTIFY infoChanged)
-    Q_PROPERTY(UpdateStream updateStream MEMBER updateStream NOTIFY infoChanged)
+  Q_OBJECT
+  Q_PROPERTY(bool devExperience MEMBER devExperience NOTIFY infoChanged)
+  Q_PROPERTY(HWEFlagSet* hweFlags READ getHWEFlags WRITE setHWEFlags NOTIFY infoChanged)
+  Q_PROPERTY(UpdateStream updateStream MEMBER updateStream NOTIFY infoChanged)
 
 public:
-    static ImageVariantInfo* loadFromDisk();
+  ImageVariantInfo(HWEFlagSet*, bool, UpdateStream);
+  ImageVariantInfo* clone();
 
-    HWEFlagSet* getHWEFlags();
-    void setHWEFlags(HWEFlagSet*);
+  static ImageVariantInfo* loadFromDisk();
+
+  HWEFlagSet* getHWEFlags();
+  void setHWEFlags(HWEFlagSet*);
 
 Q_SIGNALS:
-    void infoChanged();
+  void infoChanged();
 
 private:
-    std::unique_ptr<HWEFlagSet> hweFlags;
-    bool devExperience = false;
-    UpdateStream updateStream = unknown;
+  std::unique_ptr<HWEFlagSet> hweFlags;
+  bool devExperience = false;
+  UpdateStream updateStream = unknown;
 };
