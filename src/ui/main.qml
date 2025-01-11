@@ -32,7 +32,7 @@ KCMUtils.SimpleKCM {
             Kirigami.FormData.label: i18nc("@option:check", "System updates:")
             text: i18n("Enabled")
             checked: kcm.updatesEnabled
-            onToggled: kcm.updatesEnabled = !checked
+            onToggled: () => kcm.updatesEnabled = checked
         }
 
         RowLayout {
@@ -82,8 +82,8 @@ KCMUtils.SimpleKCM {
         Controls.CheckBox {
             Kirigami.FormData.label: i18nc("@option:check", "Hardware enablement:")
             text: i18nc("@option:check", "Enabled")
-            checked: kcm.imageVariant.hweFlags.asus
-            onToggled: settings.inhibitScreen = !checked
+            checked: kcm.imageVariant.hweFlags.hwe
+            onToggled: kcm.imageVariant.hweFlags.hwe = !checked
         }
 
         RowLayout {
@@ -92,7 +92,7 @@ KCMUtils.SimpleKCM {
             Controls.CheckBox {
                 text: i18nc("@option:check", "NVIDIA")
                 checked: kcm.imageVariant.hweFlags.nvidia || kcm.imageVariant.hweFlags.nvidiaOpen
-                onToggled: settings.inhibitScreen = !checked
+                onToggled: kcm.imageVariant.hweFlags.nvidia = !checked
             }
 
             Controls.ComboBox {

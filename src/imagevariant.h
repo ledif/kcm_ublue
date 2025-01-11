@@ -8,16 +8,20 @@
 class HWEFlagSet : public QObject
 {
   Q_OBJECT
-  Q_PROPERTY(bool hwe MEMBER hwe)
-  Q_PROPERTY(bool nvidia MEMBER nvidia)
-  Q_PROPERTY(bool nvidiaOpen MEMBER nvidiaOpen)
+  Q_PROPERTY(bool hwe MEMBER hwe NOTIFY infoChanged)
+  Q_PROPERTY(bool nvidia MEMBER nvidia NOTIFY infoChanged)
+  Q_PROPERTY(bool nvidiaOpen MEMBER nvidiaOpen NOTIFY infoChanged)
 
 public:
   bool hwe = false;
   bool nvidia = false;
   bool nvidiaOpen = false;
+
+Q_SIGNALS:
+    void infoChanged();
 };
 
+class UBlueSettings;
 
 class ImageVariantInfo : public QObject
 {
@@ -30,15 +34,18 @@ class ImageVariantInfo : public QObject
     };
 
     Q_OBJECT
-    Q_PROPERTY(bool devExperience MEMBER devExperience)
-    Q_PROPERTY(HWEFlagSet* hweFlags READ getHWEFlags WRITE setHWEFlags)
-    Q_PROPERTY(UpdateStream updateStream MEMBER updateStream)
+    Q_PROPERTY(bool devExperience MEMBER devExperience NOTIFY infoChanged)
+    Q_PROPERTY(HWEFlagSet* hweFlags READ getHWEFlags WRITE setHWEFlags NOTIFY infoChanged)
+    Q_PROPERTY(UpdateStream updateStream MEMBER updateStream NOTIFY infoChanged)
 
 public:
     static ImageVariantInfo* loadFromDisk();
 
     HWEFlagSet* getHWEFlags();
     void setHWEFlags(HWEFlagSet*);
+
+Q_SIGNALS:
+    void infoChanged();
 
 private:
     std::unique_ptr<HWEFlagSet> hweFlags;

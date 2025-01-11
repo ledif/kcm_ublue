@@ -14,15 +14,26 @@ bool isUpdateServiceEnabled()
 
 UBlueSettings::UBlueSettings(QObject *parent, const KPluginMetaData &data)
     : KQuickConfigModule(parent, data)
-    , variantInfo(ImageVariantInfo::loadFromDisk())
-    , updatesEnabled(isUpdateServiceEnabled())
 {
-    setButtons(Help | Apply | Default);
+    setButtons(Help | Apply);
+    load();
 }
 
-void UBlueSettings::updatesEnabledChanged()
+void UBlueSettings::load()
+{
+    variantInfo.reset(ImageVariantInfo::loadFromDisk());
+    updatesEnabled = isUpdateServiceEnabled();
+    currentUpdatesEnabled = updatesEnabled;
+    //currentVariantInfo.reset(variantInfo->clone());
+
+    connect(this, &UBlueSettings::infoChanged, this, &UBlueSettings::onInfoChanged);
+}
+
+void UBlueSettings::onInfoChanged()
 {
   std::cout << "updatesEnabledChanged " << this->updatesEnabled << std::endl;
+
+  this->setNeedsSave(currentUpdatesEnabled != updatesEnabled);
 }
 
 ImageVariantInfo* UBlueSettings::getImageVariant()
