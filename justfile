@@ -7,6 +7,7 @@ build:
 run:
   #!/bin/bash
   . prefix/env.sh
+  export QT_LOGGING_RULES="*.debug=true; qt.*.debug=false"
   systemsettings kcm_ublue
 
 _containerized-build:

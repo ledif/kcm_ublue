@@ -19,6 +19,7 @@ KCMUtils.SimpleKCM {
 
     Kirigami.FormLayout {
         anchors.fill: parent
+        id: rootLayout
 
         Item {
             height: Kirigami.Units.smallSpacing
@@ -35,22 +36,44 @@ KCMUtils.SimpleKCM {
             onToggled: () => kcm.updatesEnabled = checked
         }
 
+        signal updateStreamChanged(bool latest)
+        onUpdateStreamChanged: (latest) => {
+          console.log("onUpdateStreamChanged", latest)
+          stableFrequency.enabled = !latest
+          if (latest) {
+            kcm.imageVariant.updateStream = 3
+
+          } else {
+            kcm.imageVariant.updateStream = 0
+            if (stableFrequency.currentValue == "Weekly") {
+              kcm.imageVariant.updateStream = 1
+            }
+            else if (stableFrequency.currentValue == "Daily") {
+              kcm.imageVariant.updateStream = 2
+            }
+          }
+          console.log("new updateStream", kcm.imageVariant.updateStream)
+        }
+
         RowLayout {
             spacing: Kirigami.Units.mediumSpacing
 
             Controls.RadioButton {
+                id: updateStreamBtn
                 Kirigami.FormData.label: i18n("Update stream:")
                 text: i18n("Stable")
 
                 Controls.ButtonGroup.group: updateStreamGroup
                 checked: kcm.imageVariant.updateStream == 1 || kcm.imageVariant.updateStream == 2
+                onToggled: rootLayout.updateStreamChanged(false)
             }
 
             Controls.ComboBox {
                 id: stableFrequency
-                visible: kcm.imageVariant.updateStream == 1 || kcm.imageVariant.updateStream == 2
+                enabled: kcm.imageVariant.updateStream == 1 || kcm.imageVariant.updateStream == 2
 
                 model: [ "Weekly", "Daily" ]
+                onActivated: rootLayout.updateStreamChanged(false)
             }
         }
 
@@ -63,7 +86,7 @@ KCMUtils.SimpleKCM {
 
                 Controls.ButtonGroup.group: updateStreamGroup
                 checked: kcm.imageVariant.updateStream == 3
-                onToggled: kcm.updatesEnabled = 3
+                onToggled: rootLayout.updateStreamChanged(true)
             }
 
             Kirigami.ContextualHelpButton {
