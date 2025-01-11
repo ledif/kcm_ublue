@@ -30,10 +30,11 @@ KCMUtils.SimpleKCM {
         }
 
         Controls.CheckBox {
-            Kirigami.FormData.label: i18nc("@option:check", "System updates:")
-            text: i18n("Enabled")
-            checked: kcm.updatesEnabled
-            onToggled: () => kcm.updatesEnabled = checked
+          id: updatesCheckBox
+          Kirigami.FormData.label: i18nc("@option:check", "System updates:")
+          text: i18n("Enabled")
+          checked: kcm.updatesEnabled
+          onToggled: kcm.updatesEnabled = updatesCheckBox.checked
         }
 
         signal updateStreamChanged(bool latest)
@@ -102,24 +103,53 @@ KCMUtils.SimpleKCM {
             height: Kirigami.Units.smallSpacing
         }
 
+        signal hweChanged
+        onHweChanged: {
+          console.log("onHWEChanged")
+          nvidiaCombobox.enabled = nvidiaCheckbox.checked
+
+          kcm.imageVariant.hweFlags.hwe = hweCheckbox.checked
+          kcm.imageVariant.hweFlags.nvidiaOpen = false
+          kcm.imageVariant.hweFlags.nvidia = false
+
+          if (nvidiaCheckbox.checked) {
+            if (nvidiaCombobox.currentValue == "Open")
+              kcm.imageVariant.hweFlags.nvidiaOpen = true
+            else if (nvidiaCombobox.currentValue == "Closed")
+              kcm.imageVariant.hweFlags.nvidia = true
+          }
+
+          console.log("new HWEFlags", kcm.imageVariant.hweFlags.hwe, kcm.imageVariant.hweFlags.nvidia, kcm.imageVariant.hweFlags.nvidiaOpen)
+        }
+
         Controls.CheckBox {
+            id: hweCheckbox
             Kirigami.FormData.label: i18nc("@option:check", "Hardware enablement:")
             text: i18nc("@option:check", "Enabled")
             checked: kcm.imageVariant.hweFlags.hwe
-            onToggled: kcm.imageVariant.hweFlags.hwe = !checked
+            onToggled: {
+              rootLayout.hweChanged()
+              //kcm.imageVariant.hweFlags.hwe = !hweCheckbox.checked
+            }
         }
 
         RowLayout {
             spacing: Kirigami.Units.mediumSpacing
 
             Controls.CheckBox {
-                text: i18nc("@option:check", "NVIDIA")
-                checked: kcm.imageVariant.hweFlags.nvidia || kcm.imageVariant.hweFlags.nvidiaOpen
-                onToggled: kcm.imageVariant.hweFlags.nvidia = !checked
+              id: nvidiaCheckbox
+              text: i18nc("@option:check", "NVIDIA")
+              checked: kcm.imageVariant.hweFlags.nvidia || kcm.imageVariant.hweFlags.nvidiaOpen
+              onToggled: {
+                rootLayout.hweChanged()
+              }
             }
 
             Controls.ComboBox {
-                model: ["Open", "Closed"]
+              id: nvidiaCombobox
+              enabled: nvidiaCheckbox.checked
+              model: ["Open", "Closed"]
+              onActivated: rootLayout.hweChanged()
             }
 
             Kirigami.ContextualHelpButton {
@@ -137,10 +167,11 @@ KCMUtils.SimpleKCM {
         }
 
         Controls.CheckBox {
+            id: devExperience
             Kirigami.FormData.label: i18nc("@option:check", "Developer experience:")
             text: i18n("Enabled")
             checked: kcm.imageVariant.devExperience
-            onToggled: kcm.imageVariant.devExperience = !checked
+            onToggled: kcm.imageVariant.devExperience = !devExperience.checked
         }
     }
 }
