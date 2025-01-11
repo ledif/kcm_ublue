@@ -47,13 +47,10 @@ KCMUtils.SimpleKCM {
             }
 
             Controls.ComboBox {
-                            id: stableFrequency
+                id: stableFrequency
                 visible: kcm.imageVariant.updateStream == 1 || kcm.imageVariant.updateStream == 2
 
-                            //currentIndex: 0
-                            //anchors.centerIn: parent
-
-                            model: [ "Weekly", "Daily" ]
+                model: [ "Weekly", "Daily" ]
             }
         }
 
@@ -82,9 +79,15 @@ KCMUtils.SimpleKCM {
             height: Kirigami.Units.smallSpacing
         }
 
+        Controls.CheckBox {
+            Kirigami.FormData.label: i18nc("@option:check", "Hardware enablement:")
+            text: i18nc("@option:check", "Enabled")
+            checked: kcm.imageVariant.hweFlags.asus
+            onToggled: settings.inhibitScreen = !checked
+        }
+
         RowLayout {
             spacing: Kirigami.Units.mediumSpacing
-            Kirigami.FormData.label: i18nc("@option:check", "Hardware enablement:")
 
             Controls.CheckBox {
                 text: i18nc("@option:check", "NVIDIA")
@@ -101,17 +104,6 @@ KCMUtils.SimpleKCM {
             }
         }
 
-        Controls.CheckBox {
-            text: i18nc("@option:check", "ASUS")
-            checked: kcm.imageVariant.hweFlags.asus
-            onToggled: settings.inhibitScreen = !checked
-        }
-
-        Controls.CheckBox {
-            text: i18nc("@option:check", "Surface")
-            checked: kcm.imageVariant.hweFlags.surface
-            onToggled: settings.inhibitScreen = !checked
-        }
 
         Kirigami.Separator {
             Kirigami.FormData.isSection: true

@@ -69,11 +69,13 @@ ImageVariantInfo* ImageVariantInfo::loadFromDisk()
           info->hweFlags->nvidia = true;
     }
 
-    if (imageName.contains("asus"_L1))
-      info->hweFlags->asus = true;
+    if (imageName.contains("hwe"_L1))
+        info->hweFlags->hwe = true;
 
-    if (imageName.contains("surface"_L1))
-      info->hweFlags->surface = true;
+    // TODO: display a deprecation warning if user is on asus or surface
+    /*if (imageName.contains("asus"_L1))
+
+    if (imageName.contains("surface"_L1))*/
 
     // Dev experience
     if (imageName.endsWith("-dx"_L1))

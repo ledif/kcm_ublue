@@ -8,16 +8,14 @@
 class HWEFlagSet : public QObject
 {
   Q_OBJECT
+  Q_PROPERTY(bool hwe MEMBER hwe)
   Q_PROPERTY(bool nvidia MEMBER nvidia)
   Q_PROPERTY(bool nvidiaOpen MEMBER nvidiaOpen)
-  Q_PROPERTY(bool asus MEMBER asus)
-  Q_PROPERTY(bool surface MEMBER surface)
 
 public:
+  bool hwe = false;
   bool nvidia = false;
   bool nvidiaOpen = false;
-  bool asus = false;
-  bool surface = false;
 };
 
 
