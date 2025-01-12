@@ -6,7 +6,7 @@
 
 
 > [!WARNING] 
-> This is beta software and the following instructions grab the system extension from an external Cloudflare bucket. In the future, this repository
+> The following instructions grab the system extension from an external Cloudflare bucket. In the future, this repository
 > will create and push signed images. In the meantime, only install arbitrary extensions if you trust the author.
 
 These instructions will create a temporary installation using a [sysext](https://www.freedesktop.org/software/systemd/man/latest/systemd-sysext.html) placed in `/run/extensions`.
