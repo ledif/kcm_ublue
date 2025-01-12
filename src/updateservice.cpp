@@ -27,6 +27,7 @@ bool UpdateService::isEnabled()
   qDebug() << getUnitMessage;
   qDebug() << getUnitReply;
 
+  // This should be something like "/org/freedesktop/systemd1/unit/ublue_2dupdate_2etimer"
   QDBusObjectPath objectPath = getUnitReply.arguments().at(0).value<QDBusObjectPath>();
 
   QDBusMessage activeStateMessage = QDBusMessage::createMethodCall(
@@ -42,6 +43,7 @@ bool UpdateService::isEnabled()
   qDebug() << activeStateMessage;
   qDebug() << activeStateReply;
 
+  // This should be either "active" or "inactive"
   QString activeState = activeStateReply.arguments().at(0).value<QDBusVariant>().variant().value<QString>();
 
   qDebug() << activeState;

@@ -5,9 +5,9 @@
             "desktop"
         ],
         "Icon": "distributor-logo",
-        "Name": "Aurora Settings"
+        "Name": "Aurora Preferences"
     },
-    "X-KDE-Keywords": "aurora,ublue,universal blue,updates,rebase",
+    "X-KDE-Keywords": "aurora,ublue,universal blue,updates,rebase,bootc,rpm-ostree,ostree,nvidia,hwe",
     "X-KDE-System-Settings-Parent-Category": "system-administration",
     "X-KDE-Weight": 99
 }

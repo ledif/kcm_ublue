@@ -129,7 +129,6 @@ KCMUtils.SimpleKCM {
             checked: kcm.imageVariant.hweFlags.hwe
             onToggled: {
               rootLayout.hweChanged()
-              //kcm.imageVariant.hweFlags.hwe = !hweCheckbox.checked
             }
         }
 

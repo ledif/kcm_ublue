@@ -9,13 +9,14 @@
 
 using namespace Qt::Literals::StringLiterals;
 
+QString kImageInfoJson = "/usr/share/ublue-os/image-info.json"_L1;
+
 std::pair<QString, QString> getImageNameStream()
 {
-
-  QFile jsonFile("/usr/share/ublue-os/image-info.json"_L1);
+  QFile jsonFile(kImageInfoJson);
 
   if (!jsonFile.open(QIODevice::ReadOnly)) {
-    qWarning("Couldn't open image-info.json file.");
+    qWarning() << "Couldn't open file " << kImageInfoJson;
   }
 
   QByteArray ba = jsonFile.readAll();
@@ -98,8 +99,9 @@ ImageVariantInfo* ImageVariantInfo::loadFromDisk(QObject* parent)
   bool devExperience = imageName.contains("-dx"_L1);
 
   return new ImageVariantInfo{parent, hweFlags, devExperience, updateStream};
- }
+}
 
+// Create the string representation of this image (e.g., aurora-dx-hwe)
 QString ImageVariantInfo::asImageNameAndTag() const
 {
   QString image = "aurora"_L1;

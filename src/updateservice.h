@@ -1,5 +1,6 @@
 #pragma once
 
+// Representation of the systemd unit ublue-update.timer
 class UpdateService
 {
 public:

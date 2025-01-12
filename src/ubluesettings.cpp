@@ -49,6 +49,23 @@ void UBlueSettings::save()
   }
 }
 
+// Called when user clicks any UI element (checkbox, radio, etc)
+void UBlueSettings::onInfoChanged()
+{
+  qDebug() << "onInfoChanged " << variantInfo->asImageNameAndTag();
+  bool updatesEqual = currentUpdatesEnabled == updatesEnabled;
+  bool imagesEqual = *currentVariantInfo == *variantInfo;
+
+  this->setNeedsSave(!updatesEqual || !imagesEqual);
+}
+
+// Called when user clicks 'Reset'
+void UBlueSettings::onResetPressed()
+{
+  qDebug() << "onResetPressed " << variantInfo->asImageNameAndTag();
+}
+
+// Launch a terminal and call rpm-ostree rebase / bootc switch
 void UBlueSettings::startRebase()
 {
   QString rebaseTarget = variantInfo->asImageNameAndTag();
@@ -64,21 +81,6 @@ void UBlueSettings::startRebase()
 
   rebaseProcess.reset(new QProcess(this));
   rebaseProcess->start(kTerminalApp, arguments);
-}
-
-
-void UBlueSettings::onInfoChanged()
-{
-  qDebug() << "onInfoChanged " << variantInfo->asImageNameAndTag();
-  bool updatesEqual = currentUpdatesEnabled == updatesEnabled;
-  bool imagesEqual = *currentVariantInfo == *variantInfo;
-
-  this->setNeedsSave(!updatesEqual || !imagesEqual);
-}
-
-void UBlueSettings::onResetPressed()
-{
-  qDebug() << "onResetPressed " << variantInfo->asImageNameAndTag();
 }
 
 ImageVariantInfo* UBlueSettings::getImageVariant()
