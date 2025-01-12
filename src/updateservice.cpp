@@ -27,6 +27,10 @@ bool UpdateService::isEnabled()
   qDebug() << getUnitMessage;
   qDebug() << getUnitReply;
 
+  // If it's disabled, sometimes systemd will report that the unit doesn't exist
+  if (getUnitReply.type() == QDBusMessage::ErrorMessage)
+    return false;
+
   // This should be something like "/org/freedesktop/systemd1/unit/ublue_2dupdate_2etimer"
   QDBusObjectPath objectPath = getUnitReply.arguments().at(0).value<QDBusObjectPath>();
 
@@ -92,6 +96,19 @@ void disableOrEnable(QString startOrStopUnit, QString disableorEnableUnitFiles, 
 
   qDebug() << disableUnitMessage;
   qDebug() << disableUnitReply;
+
+  // systemctl daemon-reload
+  QDBusMessage daemonReloadMessage = QDBusMessage::createMethodCall(
+    "org.freedesktop.systemd1"_L1,
+    "/org/freedesktop/systemd1"_L1,
+    "org.freedesktop.systemd1.Manager"_L1,
+    "Reload"_L1
+  );
+
+  QDBusMessage daemonReloadReply = QDBusConnection::systemBus().call(daemonReloadMessage);
+
+  qDebug() << daemonReloadMessage;
+  qDebug() << daemonReloadReply;
 }
 
 void UpdateService::disable()
