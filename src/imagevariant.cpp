@@ -138,6 +138,11 @@ void ImageVariantInfo::setHWEFlags(HWEFlagSet* x)
   return hweFlags.reset(x);
 }
 
+ImageVariantInfo::UpdateStream ImageVariantInfo::getUpdateStream()
+{
+  return updateStream;
+}
+
 HWEFlagSet::HWEFlagSet(bool hwe, bool nvidia, bool nvidiaOpen)
   : hwe(hwe), nvidia(nvidia), nvidiaOpen(nvidiaOpen)
 {

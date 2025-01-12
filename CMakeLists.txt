@@ -25,6 +25,7 @@ find_package(KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS
     Config
     CoreAddons
     KCMUtils
+    WidgetsAddons
     I18n
 )
 

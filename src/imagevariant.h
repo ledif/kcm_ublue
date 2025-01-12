@@ -24,6 +24,7 @@ Q_SIGNALS:
 
 class ImageVariantInfo : public QObject
 {
+public:
   enum UpdateStream
   {
     unknown = 0,
@@ -32,6 +33,7 @@ class ImageVariantInfo : public QObject
     latest = 3,
   };
 
+private:
   Q_OBJECT
   Q_PROPERTY(bool devExperience MEMBER devExperience NOTIFY infoChanged)
   Q_PROPERTY(HWEFlagSet* hweFlags READ getHWEFlags WRITE setHWEFlags NOTIFY infoChanged)
@@ -46,6 +48,7 @@ public:
 
   HWEFlagSet* getHWEFlags();
   void setHWEFlags(HWEFlagSet*);
+  UpdateStream getUpdateStream();
 
   QString asImageNameAndTag() const;
 
