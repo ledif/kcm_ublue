@@ -14,25 +14,6 @@ K_PLUGIN_CLASS_WITH_JSON(UBlueSettings, "kcm_ublue.json")
 
 using namespace Qt::Literals::StringLiterals;
 
-
-bool isUpdateServiceEnabled()
-{
-  QDBusMessage message = QDBusMessage::createMethodCall(
-    "org.freedesktop.systemd1"_L1,
-    "/org/freedesktop/systemd1"_L1,
-    "org.freedesktop.systemd1.Manager"_L1,
-    "GetUnit"_L1
-  );
-
-  message.setArguments({"s"_L1, "ublue-update.timer"_L1});
-  QDBusMessage reply = QDBusConnection::systemBus().call(message);
-
-  auto objectPath = reply.arguments().at(0).value<QDBusVariant>().variant().value<QDBusObjectPath>();
-  //std::cout << "objectPath " << objectPath.path() << std::endl;
-
-  return true;
-}
-
 UBlueSettings::UBlueSettings(QObject *parent, const KPluginMetaData &data)
     : KQuickConfigModule(parent, data)
 {
@@ -59,6 +40,15 @@ void UBlueSettings::load()
 void UBlueSettings::save()
 {
   std::cout << "rebase " << variantInfo->asImageNameAndTag().toStdString() << std::endl;
+
+  if (currentUpdatesEnabled != updatesEnabled)
+  {
+    if (updatesEnabled)
+      UpdateService::enable();
+    else
+      UpdateService::disable();
+  }
+
 }
 
 void UBlueSettings::onInfoChanged()

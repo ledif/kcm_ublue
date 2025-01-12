@@ -48,3 +48,56 @@ bool UpdateService::isEnabled()
 
   return activeState == "active"_L1;
 }
+
+void disableOrEnable(QString startOrStopUnit, QString disableorEnableUnitFiles, bool enable)
+{
+  // systemctl start/stop
+  QDBusMessage stopUnitMessage = QDBusMessage::createMethodCall(
+    "org.freedesktop.systemd1"_L1,
+    "/org/freedesktop/systemd1"_L1,
+    "org.freedesktop.systemd1.Manager"_L1,
+    startOrStopUnit
+  );
+
+  stopUnitMessage.setInteractiveAuthorizationAllowed(true);
+
+  stopUnitMessage.setArguments({kUpdateServiceName, "replace"_L1});
+  QDBusMessage stopUnitReply = QDBusConnection::systemBus().call(stopUnitMessage);
+
+  qDebug() << stopUnitMessage;
+  qDebug() << stopUnitReply;
+
+  // systemctl enable/disable
+  QDBusMessage disableUnitMessage = QDBusMessage::createMethodCall(
+    "org.freedesktop.systemd1"_L1,
+    "/org/freedesktop/systemd1"_L1,
+    "org.freedesktop.systemd1.Manager"_L1,
+    disableorEnableUnitFiles
+  );
+
+  disableUnitMessage.setInteractiveAuthorizationAllowed(true);
+
+  QList<QVariant> arguments;
+  QStringList unitFiles;
+  unitFiles << kUpdateServiceName;
+  arguments << QVariant{unitFiles} << QVariant{false};
+
+  if (enable)
+    arguments << QVariant{true};
+
+  disableUnitMessage.setArguments(arguments);
+  QDBusMessage disableUnitReply = QDBusConnection::systemBus().call(disableUnitMessage);
+
+  qDebug() << disableUnitMessage;
+  qDebug() << disableUnitReply;
+}
+
+void UpdateService::disable()
+{
+  disableOrEnable("StopUnit"_L1, "DisableUnitFiles"_L1, false);
+}
+
+void UpdateService::enable()
+{
+  disableOrEnable("StartUnit"_L1, "EnableUnitFiles"_L1, true);
+}
