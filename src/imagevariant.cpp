@@ -62,7 +62,6 @@ bool ImageVariantInfo::operator==(const ImageVariantInfo& other) const
   return *hweFlags == *other.hweFlags && devExperience == other.devExperience && updateStream == other.updateStream;
 }
 
-
 ImageVariantInfo* ImageVariantInfo::loadFromDisk(QObject* parent)
 {
   auto [imageName, imageStream] = getImageNameStream();
@@ -90,7 +89,7 @@ ImageVariantInfo* ImageVariantInfo::loadFromDisk(QObject* parent)
   }
 
   if (imageName.contains("hwe"_L1))
-      hweFlags->hwe = true;
+    hweFlags->hwe = true;
 
   // TODO: display a deprecation warning if user is on asus or surface
   /*if (imageName.contains("asus"_L1))

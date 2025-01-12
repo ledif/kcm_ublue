@@ -2,9 +2,6 @@
 
 #include <KQuickConfigModule>
 
-#include <vector>
-
-
 class HWEFlagSet : public QObject
 {
   Q_OBJECT

@@ -11,16 +11,20 @@ class UBlueSettings : public KQuickConfigModule
 
 public:
   UBlueSettings(QObject *parent, const KPluginMetaData &data);
-  void load() override;
+
 
   ImageVariantInfo* getImageVariant();
   void setImageVariant(ImageVariantInfo*);
 
 Q_SIGNALS:
     void infoChanged();
+    void resetPressed();
 
 public Q_SLOTS:
     void onInfoChanged();
+    void onResetPressed();
+    void load() override;
+    void save() override;
 
 private:
   std::unique_ptr<ImageVariantInfo> variantInfo;
