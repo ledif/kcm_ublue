@@ -18,7 +18,8 @@ bool validateConfiguration(ImageVariantInfo* variantInfo)
   {
     QString errorMessage = "Hardware enablement images can only be on the latest stream, not stable."_L1;
     auto *dlg = new KMessageDialog(KMessageDialog::Information, errorMessage);
-    dlg->setCaption(QStringLiteral("Invalid Configuration"));
+    dlg->setCaption(QStringLiteral("Warning"));
+    dlg->setDetails(QStringLiteral("See https://github.com/ublue-os/aurora/issues/114 for more details."));
 
     dlg->setAttribute(Qt::WA_DeleteOnClose);
     dlg->setWindowModality(Qt::WindowModal);
