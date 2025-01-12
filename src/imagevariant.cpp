@@ -103,6 +103,30 @@ ImageVariantInfo* ImageVariantInfo::loadFromDisk(QObject* parent)
   return new ImageVariantInfo{parent, hweFlags, devExperience, updateStream};
  }
 
+QString ImageVariantInfo::asImageNameAndTag() const
+{
+  QString image = "aurora"_L1;
+
+  if (hweFlags->hwe)
+    image += "-hwe"_L1;
+  if (hweFlags->nvidia)
+    image += "-nvidia"_L1;
+  if (hweFlags->nvidiaOpen)
+    image += "-nvidia-open"_L1;
+  if (devExperience)
+    image += "-dx"_L1;
+
+  image += ":"_L1;
+  if (updateStream == UpdateStream::stableWeekly)
+    image += "stable"_L1;
+  else if (updateStream == UpdateStream::stableDaily)
+    image += "stable-daily"_L1;
+  else if (updateStream == UpdateStream::latest)
+    image += "latest"_L1;
+
+  return image;
+}
+
 HWEFlagSet* HWEFlagSet::clone()
 {
   return new HWEFlagSet(this->hwe, this->nvidia, this->nvidiaOpen);

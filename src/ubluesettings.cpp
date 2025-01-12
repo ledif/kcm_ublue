@@ -28,11 +28,12 @@ void UBlueSettings::load()
 
   connect(this, &UBlueSettings::infoChanged, this, &UBlueSettings::onInfoChanged);
   connect(variantInfo.get(), &ImageVariantInfo::infoChanged, this, &UBlueSettings::onInfoChanged);
+  connect(variantInfo->getHWEFlags(), &HWEFlagSet::infoChanged, this, &UBlueSettings::onInfoChanged);
 }
 
 void UBlueSettings::onInfoChanged()
 {
-  std::cout << "onInfoChanged  " << this->updatesEnabled << std::endl;
+  std::cout << "onInfoChanged " << variantInfo->asImageNameAndTag().toStdString() << std::endl;
   bool updatesEqual = currentUpdatesEnabled == updatesEnabled;
   bool imagesEqual = *currentVariantInfo == *variantInfo;
 

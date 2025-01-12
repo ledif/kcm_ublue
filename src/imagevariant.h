@@ -57,6 +57,8 @@ public:
   HWEFlagSet* getHWEFlags();
   void setHWEFlags(HWEFlagSet*);
 
+  QString asImageNameAndTag() const;
+
 Q_SIGNALS:
   void infoChanged();
 
