@@ -3,6 +3,7 @@
 
 #include <KPluginFactory>
 #include <KMessageDialog>
+#include <QProcessEnvironment>
 
 using namespace Qt::Literals::StringLiterals;
 
@@ -96,16 +97,21 @@ void UBlueSettings::startRebase()
   QString rebaseTarget = variantInfo->asImageNameAndTag();
   qDebug() << "Rebasing to " << rebaseTarget;
 
+  auto runtimeDir = QProcessEnvironment::systemEnvironment().value("XDG_RUNTIME_DIR"_L1);
+  auto waylandDisplay = QProcessEnvironment::systemEnvironment().value("WAYLAND_DISPLAY"_L1);
+  auto waylandDisplayPath = runtimeDir + "/"_L1 + waylandDisplay;
+
   QStringList arguments;
 
   QString command = "echo Rebasing to "_L1 + rebaseTarget;
-  command += "; sudo rpm-ostree rebase ostree-image-signed:docker://ghcr.io/ublue-os/"_L1 + rebaseTarget;
+  command += "; rpm-ostree rebase ostree-image-signed:docker://ghcr.io/ublue-os/"_L1 + rebaseTarget;
   command += "; read -p 'Press enter to continue'"_L1;
 
-  arguments << "--"_L1 << "bash"_L1 << "-c"_L1 << command;
+  arguments << "env"_L1 << ("WAYLAND_DISPLAY="_L1 + waylandDisplayPath) << "XDG_RUNTIME_DIR=/run/user/0"_L1;
+  arguments << kTerminalApp << "--"_L1 << "bash"_L1 << "-c"_L1 << command;
 
   rebaseProcess.reset(new QProcess(this));
-  rebaseProcess->start(kTerminalApp, arguments);
+  rebaseProcess->start("pkexec"_L1, arguments);
 }
 
 ImageVariantInfo* UBlueSettings::getImageVariant()
