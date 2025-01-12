@@ -9,8 +9,13 @@ TODO:
 
 ## Development 
 
+Tested on Aurora 41 Developer Experience.
+
 To build and run:
 ```bash
 just build
+just install
 just run
 ```
+
+This will create a [sysext](https://www.freedesktop.org/software/systemd/man/latest/systemd-sysext.html) in `/run/extensions`. This is an ephemeral installation and will be removed upon reboot.
