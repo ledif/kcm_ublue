@@ -6,12 +6,12 @@
 #include <QDBusObjectPath>
 #include <QDBusInterface>
 
-#include <iostream>
-
 using namespace Qt::Literals::StringLiterals;
 
 QString kUpdateServiceName = "ublue-update.timer"_L1;
 
+// Use D-Bus to basically call systemctl status ublue-update.timer
+// and check that it is enabled
 bool UpdateService::isEnabled()
 {
   QDBusMessage getUnitMessage = QDBusMessage::createMethodCall(

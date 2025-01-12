@@ -14,19 +14,13 @@ public:
   bool nvidia = false;
   bool nvidiaOpen = false;
 
-  HWEFlagSet(bool hwe, bool nvidia, bool nvidiaOpen)
-    : hwe(hwe), nvidia(nvidia), nvidiaOpen(nvidiaOpen)
-  { }
-
+  HWEFlagSet(bool hwe, bool nvidia, bool nvidiaOpen);
   HWEFlagSet* clone();
-
   bool operator==(const HWEFlagSet&) const;
 
 Q_SIGNALS:
   void infoChanged();
 };
-
-class UBlueSettings;
 
 class ImageVariantInfo : public QObject
 {
@@ -46,7 +40,6 @@ class ImageVariantInfo : public QObject
 public:
   ImageVariantInfo(QObject*, HWEFlagSet*, bool, UpdateStream);
   ImageVariantInfo* clone();
-
   bool operator==(const ImageVariantInfo&) const;
 
   static ImageVariantInfo* loadFromDisk(QObject*);

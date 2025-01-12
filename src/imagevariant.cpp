@@ -7,8 +7,6 @@
 #include <QJsonParseError>
 #include <QString>
 
-#include <iostream>
-
 using namespace Qt::Literals::StringLiterals;
 
 std::pair<QString, QString> getImageNameStream()
@@ -65,8 +63,8 @@ bool ImageVariantInfo::operator==(const ImageVariantInfo& other) const
 ImageVariantInfo* ImageVariantInfo::loadFromDisk(QObject* parent)
 {
   auto [imageName, imageStream] = getImageNameStream();
-  std::cout << "Image name: " << imageName.toStdString() << std::endl;
-  std::cout << "Image stream: " << imageStream.toStdString() << std::endl;
+  qDebug() << "Image name: " << imageName;
+  qDebug() << "Image stream: " << imageStream;
 
   // Update stream
   UpdateStream updateStream;
@@ -128,17 +126,6 @@ QString ImageVariantInfo::asImageNameAndTag() const
   return image;
 }
 
-HWEFlagSet* HWEFlagSet::clone()
-{
-  return new HWEFlagSet(this->hwe, this->nvidia, this->nvidiaOpen);
-}
-
-bool HWEFlagSet::operator==(const HWEFlagSet& other) const
-{
-  return hwe == other.hwe && nvidia == other.nvidia && nvidiaOpen == other.nvidiaOpen;
-}
-
-
 HWEFlagSet* ImageVariantInfo::getHWEFlags()
 {
   return hweFlags.get();
@@ -149,4 +136,17 @@ void ImageVariantInfo::setHWEFlags(HWEFlagSet* x)
   return hweFlags.reset(x);
 }
 
-//#include "imagevariant.moc"
+HWEFlagSet::HWEFlagSet(bool hwe, bool nvidia, bool nvidiaOpen)
+  : hwe(hwe), nvidia(nvidia), nvidiaOpen(nvidiaOpen)
+{
+}
+
+HWEFlagSet* HWEFlagSet::clone()
+{
+  return new HWEFlagSet(this->hwe, this->nvidia, this->nvidiaOpen);
+}
+
+bool HWEFlagSet::operator==(const HWEFlagSet& other) const
+{
+  return hwe == other.hwe && nvidia == other.nvidia && nvidiaOpen == other.nvidiaOpen;
+}

@@ -3,8 +3,6 @@
 
 #include <KPluginFactory>
 
-#include <iostream>
-
 using namespace Qt::Literals::StringLiterals;
 
 K_PLUGIN_CLASS_WITH_JSON(UBlueSettings, "kcm_ublue.json")
@@ -32,6 +30,7 @@ void UBlueSettings::load()
   Q_EMIT onResetPressed();
 }
 
+// Called when user clicks 'Apply'
 void UBlueSettings::save()
 {
   // Enable/disable updates if needed
@@ -43,6 +42,7 @@ void UBlueSettings::save()
       UpdateService::disable();
   }
 
+  // Rebase to new image if needed
   if (*currentVariantInfo != *variantInfo)
   {
     startRebase();
@@ -69,7 +69,7 @@ void UBlueSettings::startRebase()
 
 void UBlueSettings::onInfoChanged()
 {
-  std::cout << "onInfoChanged " << variantInfo->asImageNameAndTag().toStdString() << std::endl;
+  qDebug() << "onInfoChanged " << variantInfo->asImageNameAndTag();
   bool updatesEqual = currentUpdatesEnabled == updatesEnabled;
   bool imagesEqual = *currentVariantInfo == *variantInfo;
 
@@ -78,7 +78,7 @@ void UBlueSettings::onInfoChanged()
 
 void UBlueSettings::onResetPressed()
 {
-  std::cout << "onResetPressed " << variantInfo->asImageNameAndTag().toStdString() << std::endl;
+  qDebug() << "onResetPressed " << variantInfo->asImageNameAndTag();
 }
 
 ImageVariantInfo* UBlueSettings::getImageVariant()

@@ -14,7 +14,6 @@ class UBlueSettings : public KQuickConfigModule
 public:
   UBlueSettings(QObject *parent, const KPluginMetaData &data);
 
-
   ImageVariantInfo* getImageVariant();
   void setImageVariant(ImageVariantInfo*);
 
@@ -32,10 +31,12 @@ private:
   void startRebase();
   std::unique_ptr<QProcess> rebaseProcess;
 
-  std::unique_ptr<ImageVariantInfo> variantInfo;
-  bool updatesEnabled;
-
+  // Values of current settings before any changes
   bool currentUpdatesEnabled;
   std::unique_ptr<ImageVariantInfo> currentVariantInfo;
+
+  // Values of (potentially new) settings
+  std::unique_ptr<ImageVariantInfo> variantInfo;
+  bool updatesEnabled;
 };
 
