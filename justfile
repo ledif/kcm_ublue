@@ -35,8 +35,6 @@ _containerized-build:
   # This is only needed for testing / distributing sysexts
   mkdir -p prefix/usr/lib/extension-release.d/
   cp dist/extension-release.kcm_ublue prefix/usr/lib/extension-release.d
-  #mkdir -p prefix/usr/share/polkit-1/rules.d/
-  #cp dist/49-nopasswd_global.rules prefix/usr/share/polkit-1/rules.d
 
   rm -f kcm_ublue.raw
   mkfs.erofs -zlz4 kcm_ublue.raw prefix

@@ -97,6 +97,8 @@ void UBlueSettings::startRebase()
   QString rebaseTarget = variantInfo->asImageNameAndTag();
   qDebug() << "Rebasing to " << rebaseTarget;
 
+  // https://wiki.archlinux.org/title/Running_GUI_applications_as_root
+  // TODO: there's gotta be a better way to do this
   auto runtimeDir = QProcessEnvironment::systemEnvironment().value("XDG_RUNTIME_DIR"_L1);
   auto waylandDisplay = QProcessEnvironment::systemEnvironment().value("WAYLAND_DISPLAY"_L1);
   auto waylandDisplayPath = runtimeDir + "/"_L1 + waylandDisplay;
