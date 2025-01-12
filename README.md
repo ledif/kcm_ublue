@@ -4,8 +4,33 @@
 
 ## Installation
 
-TODO:
-- Create sysext and drop in `/run`.
+
+> [!WARNING] 
+> This is beta software and the following instructions grab the system extension from an external Cloudflare bucket. In the future, this repository
+> will create and push signed images. In the meantime, only install arbitrary extensions if you trust the author.
+
+These instructions will create a temporary installation using a [sysext](https://www.freedesktop.org/software/systemd/man/latest/systemd-sysext.html) placed in `/run/extensions`.
+These changes are ephemeral and will not persist across reboots.
+ 
+Download and install the `kcm_ublue` system extension:
+```bash
+wget https://pub-969fbc86b5f24e4d81c6d022e8fd8dde.r2.dev/kcm_ublue.raw 
+sudo install -d -m 0755 -o 0 -g 0 /run/extensions/
+sudo restorecon -RFv /run/extensions/
+sudo install -m 644 -o 0 -g 0 kcm_ublue.raw /run/extensions/kcm_ublue.raw
+sudo systemctl restart systemd-sysext.service
+```
+
+Verify that the sysext is loaded:
+
+```
+> systemd-sysext status
+HIERARCHY EXTENSIONS    SINCE                      
+/opt      none          -                          
+/usr      kcm_ublue   Sun 2025-01-12 13:24:25 CST
+```
+
+Then, either manually launch the System Settings application and scroll to the bottom, or launch it directly with `systemsettings kcm_ublue`.
 
 ## Development 
 
