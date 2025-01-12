@@ -97,7 +97,7 @@ ImageVariantInfo* ImageVariantInfo::loadFromDisk(QObject* parent)
   if (imageName.contains("surface"_L1))*/
 
   // Dev experience
-  bool devExperience = imageName.endsWith("-dx"_L1);
+  bool devExperience = imageName.contains("-dx"_L1);
 
   return new ImageVariantInfo{parent, hweFlags, devExperience, updateStream};
  }
@@ -106,14 +106,16 @@ QString ImageVariantInfo::asImageNameAndTag() const
 {
   QString image = "aurora"_L1;
 
+  if (devExperience)
+    image += "-dx"_L1;
+
   if (hweFlags->hwe)
     image += "-hwe"_L1;
   if (hweFlags->nvidia)
     image += "-nvidia"_L1;
   if (hweFlags->nvidiaOpen)
     image += "-nvidia-open"_L1;
-  if (devExperience)
-    image += "-dx"_L1;
+
 
   image += ":"_L1;
   if (updateStream == UpdateStream::stableWeekly)
