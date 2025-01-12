@@ -1,7 +1,9 @@
 #pragma once
 
-#include <KQuickConfigModule>
 #include "imagevariant.h"
+
+#include <KQuickConfigModule>
+#include <QProcess>
 
 class UBlueSettings : public KQuickConfigModule
 {
@@ -27,6 +29,9 @@ public Q_SLOTS:
     void save() override;
 
 private:
+  void startRebase();
+  std::unique_ptr<QProcess> rebaseProcess;
+
   std::unique_ptr<ImageVariantInfo> variantInfo;
   bool updatesEnabled;
 
