@@ -167,11 +167,11 @@ KCMUtils.SimpleKCM {
         }
 
         Controls.CheckBox {
-            id: devExperience
+            id: dxCheckbox
             Kirigami.FormData.label: i18nc("@option:check", "Developer experience:")
             text: i18n("Enabled")
             checked: kcm.imageVariant.devExperience
-            onToggled: kcm.imageVariant.devExperience = !devExperience.checked
+            onToggled: kcm.imageVariant.devExperience = dxCheckbox.checked
         }
     }
 }

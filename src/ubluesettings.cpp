@@ -21,19 +21,22 @@ UBlueSettings::UBlueSettings(QObject *parent, const KPluginMetaData &data)
 
 void UBlueSettings::load()
 {
-  variantInfo.reset(ImageVariantInfo::loadFromDisk());
+  variantInfo.reset(ImageVariantInfo::loadFromDisk(this));
   updatesEnabled = isUpdateServiceEnabled();
   currentUpdatesEnabled = updatesEnabled;
   currentVariantInfo.reset(variantInfo->clone());
 
   connect(this, &UBlueSettings::infoChanged, this, &UBlueSettings::onInfoChanged);
+  connect(variantInfo.get(), &ImageVariantInfo::infoChanged, this, &UBlueSettings::onInfoChanged);
 }
 
 void UBlueSettings::onInfoChanged()
 {
-  std::cout << "updatesEnabledChanged " << this->updatesEnabled << std::endl;
+  std::cout << "onInfoChanged  " << this->updatesEnabled << std::endl;
+  bool updatesEqual = currentUpdatesEnabled == updatesEnabled;
+  bool imagesEqual = *currentVariantInfo == *variantInfo;
 
-  this->setNeedsSave(currentUpdatesEnabled != updatesEnabled);
+  this->setNeedsSave(!updatesEqual || !imagesEqual);
 }
 
 ImageVariantInfo* UBlueSettings::getImageVariant()

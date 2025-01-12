@@ -1,4 +1,5 @@
 #include "imagevariant.h"
+#include "ubluesettings.h"
 
 #include <QFile>
 #include <QJsonDocument>
@@ -16,7 +17,7 @@ std::pair<QString, QString> getImageNameStream()
   QFile jsonFile("/usr/share/ublue-os/image-info.json"_L1);
 
   if (!jsonFile.open(QIODevice::ReadOnly)) {
-      qWarning("Couldn't open image-info.json file.");
+    qWarning("Couldn't open image-info.json file.");
   }
 
   QByteArray ba = jsonFile.readAll();
@@ -26,7 +27,7 @@ std::pair<QString, QString> getImageNameStream()
   QJsonDocument jsonDoc = QJsonDocument::fromJson(ba, &parseError);
 
   if (parseError.error != QJsonParseError::NoError) {
-      qWarning() << "Parse error at" << parseError.offset << ":" << parseError.errorString();
+    qWarning() << "Parse error at" << parseError.offset << ":" << parseError.errorString();
   }
 
   QJsonObject jsonObj;
@@ -35,16 +36,17 @@ std::pair<QString, QString> getImageNameStream()
   QString imageName = jsonObj.value("image-name"_L1).toString();
 
   return {
-      imageName,
-      // TODO: these fields are different in Aurora vs Bazzite
-      imageName.startsWith("aurora"_L1) ?
-          jsonObj.value("image-tag"_L1).toString() :
-          jsonObj.value("image-branch"_L1).toString()
+    imageName,
+    // TODO: these fields are different in Aurora vs Bazzite
+    imageName.startsWith("aurora"_L1) ?
+      jsonObj.value("image-tag"_L1).toString() :
+      jsonObj.value("image-branch"_L1).toString()
   };
 }
 
-ImageVariantInfo::ImageVariantInfo(HWEFlagSet* hweFlags, bool devExperience, UpdateStream updateStream)
-  : hweFlags(hweFlags)
+ImageVariantInfo::ImageVariantInfo(QObject* parent, HWEFlagSet* hweFlags, bool devExperience, UpdateStream updateStream)
+  : QObject(parent)
+  , hweFlags(hweFlags)
   , devExperience(devExperience)
   , updateStream(updateStream)
 {
@@ -52,10 +54,16 @@ ImageVariantInfo::ImageVariantInfo(HWEFlagSet* hweFlags, bool devExperience, Upd
 
 ImageVariantInfo* ImageVariantInfo::clone()
 {
-  return new ImageVariantInfo(this->hweFlags->clone(), this->devExperience, this->updateStream);
+  return new ImageVariantInfo(nullptr, this->hweFlags->clone(), this->devExperience, this->updateStream);
 }
 
-ImageVariantInfo* ImageVariantInfo::loadFromDisk()
+bool ImageVariantInfo::operator==(const ImageVariantInfo& other) const
+{
+  return *hweFlags == *other.hweFlags && devExperience == other.devExperience && updateStream == other.updateStream;
+}
+
+
+ImageVariantInfo* ImageVariantInfo::loadFromDisk(QObject* parent)
 {
   auto [imageName, imageStream] = getImageNameStream();
   std::cout << "Image name: " << imageName.toStdString() << std::endl;
@@ -92,13 +100,19 @@ ImageVariantInfo* ImageVariantInfo::loadFromDisk()
   // Dev experience
   bool devExperience = imageName.endsWith("-dx"_L1);
 
-  return new ImageVariantInfo{hweFlags, devExperience, updateStream};
+  return new ImageVariantInfo{parent, hweFlags, devExperience, updateStream};
  }
 
 HWEFlagSet* HWEFlagSet::clone()
 {
   return new HWEFlagSet(this->hwe, this->nvidia, this->nvidiaOpen);
 }
+
+bool HWEFlagSet::operator==(const HWEFlagSet& other) const
+{
+  return hwe == other.hwe && nvidia == other.nvidia && nvidiaOpen == other.nvidiaOpen;
+}
+
 
 HWEFlagSet* ImageVariantInfo::getHWEFlags()
 {

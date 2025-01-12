@@ -23,6 +23,8 @@ public:
 
   HWEFlagSet* clone();
 
+  bool operator==(const HWEFlagSet&) const;
+
 Q_SIGNALS:
   void infoChanged();
 };
@@ -45,10 +47,12 @@ class ImageVariantInfo : public QObject
   Q_PROPERTY(UpdateStream updateStream MEMBER updateStream NOTIFY infoChanged)
 
 public:
-  ImageVariantInfo(HWEFlagSet*, bool, UpdateStream);
+  ImageVariantInfo(QObject*, HWEFlagSet*, bool, UpdateStream);
   ImageVariantInfo* clone();
 
-  static ImageVariantInfo* loadFromDisk();
+  bool operator==(const ImageVariantInfo&) const;
+
+  static ImageVariantInfo* loadFromDisk(QObject*);
 
   HWEFlagSet* getHWEFlags();
   void setHWEFlags(HWEFlagSet*);
