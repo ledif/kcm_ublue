@@ -31,10 +31,14 @@ _containerized-build:
   mkdir prefix/usr/lib64/qt6
   mv prefix/usr/lib64/plugins prefix/usr/lib64/qt6
 
-
   # This is only needed for testing / distributing sysexts
   mkdir -p prefix/usr/lib/extension-release.d/
   cp dist/extension-release.kcm_ublue prefix/usr/lib/extension-release.d
+
+  cd prefix
+  setfiles -r . /etc/selinux/targeted/contexts/files/file_contexts .
+  chcon --user=system_u --recursive .
+  cd ..
 
   rm -f kcm_ublue.raw
   mkfs.erofs -zlz4 kcm_ublue.raw prefix
