@@ -10,6 +10,12 @@ run:
 install:
   #!/bin/bash
   set -xeu
+
+  if getenforce | grep -q Enforcing; then
+    echo "SELinux and systemd-sysext don't play well here. Set SELInux to permissive first."
+    exit 1
+  fi
+
   sudo install -d -m 0755 -o 0 -g 0 /run/extensions/
   sudo restorecon -RFv /run/extensions/
   sudo install -m 644 -o 0 -g 0 kcm_ublue.raw /run/extensions/kcm_ublue.raw
