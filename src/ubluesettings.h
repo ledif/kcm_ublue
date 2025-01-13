@@ -28,9 +28,6 @@ public Q_SLOTS:
     void save() override;
 
 private:
-  void startRebase();
-  std::unique_ptr<QProcess> rebaseProcess;
-
   // Values of current settings before any changes
   bool currentUpdatesEnabled;
   std::unique_ptr<ImageVariantInfo> currentVariantInfo;

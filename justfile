@@ -22,8 +22,8 @@ install:
   rm kcm_ublue.raw
   sudo systemctl restart systemd-sysext.service
   systemd-sysext status
+  sudo systemctl daemon-reload
   sudo systemctl restart polkit
-
 
 _containerized-build:
   #!/bin/bash
