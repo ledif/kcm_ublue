@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+image="ghcr.io/ublue-os/${1}"
+
+if /usr/bin/grep "^LockLayering=true" /etc/rpm-ostreed.conf &> /dev/null; then
+    bootc switch --enforce-container-sigpolicy "${image}"
+else
+    rpm-ostree rebase ostree-image-signed:docker://"${image}"
+fi

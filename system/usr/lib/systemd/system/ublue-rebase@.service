@@ -3,7 +3,7 @@ Description=Rebase helper service used in Universal Blue KCM
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/ublue-rebase %I
+ExecStart=/usr/libexec/ublue-rebase %I
 
 [Install]
 WantedBy=multi-user.target

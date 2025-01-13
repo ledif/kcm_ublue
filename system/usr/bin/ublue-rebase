@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-set -euo pipefail
-
-echo rpm-ostree rebase ostree-image-signed:docker://ghcr.io/ublue-os/"$1"
