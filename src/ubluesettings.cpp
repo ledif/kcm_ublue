@@ -110,10 +110,10 @@ void UBlueSettings::startRebase()
   command += "; read -p 'Press enter to continue'"_L1;
 
   arguments << "env"_L1 << ("WAYLAND_DISPLAY="_L1 + waylandDisplayPath) << "XDG_RUNTIME_DIR=/run/user/0"_L1;
-  arguments << kTerminalApp << "--"_L1 << "bash"_L1 << "-c"_L1 << command;
+  arguments <<  "--"_L1 << "pkexec"_L1 << "bash"_L1 << "-c"_L1 << command;
 
   rebaseProcess.reset(new QProcess(this));
-  rebaseProcess->start("pkexec"_L1, arguments);
+  rebaseProcess->start(kTerminalApp, arguments);
 }
 
 ImageVariantInfo* UBlueSettings::getImageVariant()
