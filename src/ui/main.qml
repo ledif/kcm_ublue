@@ -24,11 +24,40 @@ KCMUtils.SimpleKCM {
         visible: kcm.imageVariant.isDeprecatedStream
     }
 
-    /*Kirigami.InlineMessage {
+    Kirigami.InlineMessage {
+        id: rebaseInProgressMessage
         Layout.fillWidth: true
-        text: "Rebase in progress"
-        visible: true
-    }*/
+        text: "Rebase to " + kcm.rebase.prettyName + " in progress"
+        visible: kcm.rebase.prettyName
+
+
+        actions: [
+            Kirigami.Action {
+                enabled: true
+                text: qsTr("Details")
+                icon.name: "view-list-details"
+                onTriggered: {
+                    actionsMessage.text = actionsMessage.initialText + " Peekaboo!";
+                }
+            },
+            Kirigami.Action {
+                enabled: true
+                text: qsTr("Cancel")
+                icon.name: "cancel"
+                onTriggered: actionsMessage.text = actionsMessage.initialText
+            }
+        ]
+
+        Connections {
+            target: kcm // The C++ object exposed in main.cpp
+            onRebaseServiceChanged: {
+                console.log("Signal received!", kcm.rebase, kcm.rebase.prettyName);
+                rebaseInProgressMessage.text = "Rebase to " + kcm.rebase.prettyName + " in progress"
+                rebaseInProgressMessage.visible = true
+
+            }
+        }
+    }
 
 
     /*Kirigami.InlineMessage {

@@ -23,6 +23,7 @@ install:
   sudo systemctl restart systemd-sysext.service
   systemd-sysext status
   sudo systemctl daemon-reload
+  sudo rm -f /run/ublue-rebase
   #sudo systemctl restart polkit
 
 _containerized-build:

@@ -11,6 +11,7 @@ class UBlueSettings : public KQuickConfigModule
   Q_OBJECT
   Q_PROPERTY(bool updatesEnabled MEMBER updatesEnabled NOTIFY infoChanged)
   Q_PROPERTY(ImageVariantInfo* imageVariant READ getImageVariant WRITE setImageVariant NOTIFY infoChanged)
+  Q_PROPERTY(RebaseService* rebase READ getRebaseService CONSTANT)
 
 public:
   UBlueSettings(QObject *parent, const KPluginMetaData &data);
@@ -18,16 +19,19 @@ public:
   ImageVariantInfo* getImageVariant();
   void setImageVariant(ImageVariantInfo*);
 
+  RebaseService* getRebaseService();
+
 Q_SIGNALS:
     void infoChanged();
     void resetPressed();
+    void rebaseServiceChanged(RebaseService*);
 
 public Q_SLOTS:
     void onInfoChanged();
     void onResetPressed();
     void load() override;
     void save() override;
-    void onRebaseServiceChanged();
+    void onRebaseServiceChanged(RebaseService*);
 
 private:
   std::unique_ptr<RebaseManager> rebaseManager;

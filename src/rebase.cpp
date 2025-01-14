@@ -41,29 +41,32 @@ QString getFullServiceName(const QString& rebaseTarget)
 
 RebaseService::RebaseService()
 {
-  QFile file(kRunFilename);
-
-  if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-    qWarning() << "Failed to open file:" << file.errorString();
-  }
-
-  QTextStream in(&file);
-
-  QString line = in.readLine();
-  if (line.isNull()) {
-
-
-    QStringList parts = line.split(QChar::fromLatin1(' '), Qt::SkipEmptyParts);
-    if (parts.size() < 2) {
-      qWarning() << "Line does not contain two space-delimited strings.";
+  if (QFile::exists(kRunFilename))
+  {
+    QFile file(kRunFilename);
+    
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+      qWarning() << "Failed to open file:" << file.errorString();
     }
 
-    // Assign values to foo and bar
-    prettyName = parts[0];
-    unitName = parts[1];
-  } else {
-    qWarning() << "run file is empty or unreadable.";
+    QTextStream in(&file);
 
+    QString line = in.readLine();
+    if (!line.isNull()) {
+
+
+      QStringList parts = line.split(QChar::fromLatin1(' '), Qt::SkipEmptyParts);
+      if (parts.size() < 2) {
+        qWarning() << "Line does not contain two space-delimited strings.";
+      }
+
+      // Assign values to foo and bar
+      prettyName = parts[0];
+      unitName = parts[1];
+    } else {
+      qWarning() << "run file is empty or unreadable.";
+
+    }
   }
 }
 
@@ -71,12 +74,14 @@ RebaseService::RebaseService()
 
 RebaseManager::RebaseManager(QObject* parent)
   : QObject(parent)
+  , currentService(new RebaseService{})
 {
+  connect(this, &RebaseManager::runFileChanged, this, &RebaseManager::onRunFileChanged);
+
   if (QFile::exists(kRunFilename)) {
     this->fileWatcher.reset(new QFileSystemWatcher(this));
     fileWatcher->addPath(kRunFilename);
     connect(fileWatcher.get(), &QFileSystemWatcher::fileChanged, this, &RebaseManager::runFileChanged);
-    connect(this, &RebaseManager::runFileChanged, this, &RebaseManager::onRunFileChanged);
 
     Q_EMIT runFileChanged();
   } else {
@@ -88,11 +93,13 @@ RebaseManager::RebaseManager(QObject* parent)
 
 void RebaseManager::checkIfRunfileCreated()
 {
+  qDebug() << "/run dir changed";
   if (QFile::exists(kRunFilename)) {
-    Q_EMIT runFileChanged();
+    qDebug() << "/run/ublue-rebase created";
     this->fileWatcher.reset(new QFileSystemWatcher(this));
     fileWatcher->addPath(kRunFilename);
-    connect(fileWatcher.get(), &QFileSystemWatcher::fileChanged, this, &RebaseManager::runFileChanged);
+    connect(fileWatcher.get(), SIGNAL(&QFileSystemWatcher::fileChanged), this, SIGNAL(&RebaseManager::runFileChanged));
+    Q_EMIT runFileChanged();
 
     this->dirWatcher.reset();
   }
@@ -103,17 +110,15 @@ void RebaseManager::onRunFileChanged()
   qDebug() << "onRunFileChanged";
   if (QFile::exists(kRunFilename)) {
     currentService.reset(new RebaseService());
-    Q_EMIT serviceChanged();
+    Q_EMIT serviceChanged(currentService.get());
   }
 }
 
 
-const RebaseService* RebaseManager::getCurrentService()
+RebaseService* RebaseManager::getCurrentService()
 {
   return currentService.get();
 }
-
-
 
 bool RebaseManager::startRebase(const QString& rebaseTarget)
 {

@@ -40,7 +40,8 @@ UBlueSettings::UBlueSettings(QObject *parent, const KPluginMetaData &data)
   setButtons(Help | Apply);
   load();
 
-  connect(rebaseManager.get(), &RebaseManager::serviceChanged, this, &UBlueSettings::onRebaseServiceChanged);
+  connect(rebaseManager.get(), &RebaseManager::serviceChanged, this, &UBlueSettings::rebaseServiceChanged);
+  connect(this, &UBlueSettings::rebaseServiceChanged, this, &UBlueSettings::onRebaseServiceChanged);
 }
 
 void UBlueSettings::load()
@@ -95,10 +96,15 @@ void UBlueSettings::onResetPressed()
   qDebug() << "onResetPressed " << variantInfo->asImageNameAndTag();
 }
 
-void UBlueSettings::onRebaseServiceChanged()
+void UBlueSettings::onRebaseServiceChanged(RebaseService* rebaseService)
 {
   qDebug() << "onRebaseServiceChanged ";
-  qDebug() << rebaseManager->getCurrentService()->prettyName;
+  qDebug() << rebaseService->prettyName;
+}
+
+RebaseService* UBlueSettings::getRebaseService()
+{
+  return rebaseManager->getCurrentService();
 }
 
 ImageVariantInfo* UBlueSettings::getImageVariant()

@@ -35,10 +35,10 @@ public:
   RebaseManager(QObject*);
 
   bool startRebase(const QString&);
-  const RebaseService* getCurrentService();
+  RebaseService* getCurrentService();
 
 Q_SIGNALS:
-  void serviceChanged();
+  void serviceChanged(RebaseService*);
   void runFileChanged();
 
 public Q_SLOTS:

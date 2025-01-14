@@ -16,6 +16,10 @@ send-notification "System Rebase" "Starting rebase to $image"
 echo "$1 $unit" > /run/ublue-rebase
 
 sleep 10
+
+send-notification "System Rebase" "Rebase completed. Please reboot to use the new image."
+
+
 #echo bootc switch --enforce-container-sigpolicy "${image}"
 
 #if /usr/bin/grep "^LockLayering=true" /etc/rpm-ostreed.conf &> /dev/null; then
