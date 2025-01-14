@@ -82,7 +82,7 @@ void UBlueSettings::save()
 
 bool UBlueSettings::isRebaseInProgress()
 {
-  return rebaseManager->getCurrentService() != nullptr;
+  return !rebaseManager->getCurrentService()->unitName.isEmpty();
 }
 
 // Called when user clicks any UI element (checkbox, radio, etc)

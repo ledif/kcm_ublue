@@ -10,6 +10,8 @@ target_sources(kcm_ublue PRIVATE
     rebasefilewatcher.cpp
     rebaseservice.h
     rebaseservice.cpp
+    systemdunitmonitor.h
+    systemdunitmonitor.cpp
     ubluesettings.cpp
     ubluesettings.h
     updateservice.cpp

@@ -38,18 +38,18 @@ QString getFullServiceName(const QString& rebaseTarget)
 
 RebaseManager::RebaseManager(QObject* parent)
   : QObject(parent)
-  , currentService(nullptr)
+  , currentService(new RebaseService())
   , fileWatcher(new RebaseFileWatcher(this))
 {
   if (auto parsedRunFile = fileWatcher->tryParse(); parsedRunFile)
-    currentService.reset(new RebaseService(parsedRunFile->first, parsedRunFile->second));
+    currentService->reload(parsedRunFile->first, parsedRunFile->second);
 
   connect(fileWatcher.get(), &RebaseFileWatcher::runFileChanged, this, &RebaseManager::onRunFileChanged);
 }
 
 void RebaseManager::onRunFileChanged(QString prettyName, QString unitName)
 {
-  currentService.reset(new RebaseService(prettyName, unitName));
+  currentService->reload(prettyName, unitName);
   Q_EMIT serviceChanged(currentService.get());
 }
 

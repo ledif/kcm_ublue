@@ -1,23 +1,9 @@
 #pragma once
 
+#include "systemdunitmonitor.h"
+
 #include <QObject>
 #include <QString>
-
-
-class SystemdUnitMonitor : public QObject 
-{
-  Q_OBJECT
-
-public:
-  SystemdUnitMonitor(QString unitName);
-
-Q_SIGNALS:
-  void unitStateChanged(QString newState);
-
-private Q_SLOTS:
-  void onPropertiesChanged(const QString &interface, const QVariantMap &changedProperties, const QStringList&);
-
-};
 
 // Representation of a systemd unit ublue-rebase@.service
 struct RebaseService : public QObject
@@ -35,14 +21,18 @@ struct RebaseService : public QObject
   Q_PROPERTY(ServiceStatus status MEMBER status CONSTANT)
 
 public:
-  RebaseService(QString, QString);
+  RebaseService() = default;
+  void reload(QString, QString);
 
   QString prettyName;
   QString unitName;
-  ServiceStatus status;
+  ServiceStatus status = noService;
 
 Q_SIGNALS:
-  void systemdUnitStateChange(ServiceStatus);
+  void stateChange(ServiceStatus);
+
+private Q_SLOTS:
+  void onSystemdStateChange(QString);
 
 private:
   std::unique_ptr<SystemdUnitMonitor> systemdUnitMonitor;
