@@ -36,10 +36,6 @@ QString getFullServiceName(const QString& rebaseTarget)
   return QString::fromUtf8(proc.readAllStandardOutput()).trimmed();
 }
 
-RebaseService::RebaseService(QString prettyName, QString unitName)
-  : prettyName(prettyName), unitName(unitName)
-{ }
-
 RebaseManager::RebaseManager(QObject* parent)
   : QObject(parent)
   , currentService(nullptr)

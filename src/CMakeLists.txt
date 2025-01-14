@@ -8,6 +8,8 @@ target_sources(kcm_ublue PRIVATE
     rebasemanager.cpp
     rebasefilewatcher.h
     rebasefilewatcher.cpp
+    rebaseservice.h
+    rebaseservice.cpp
     ubluesettings.cpp
     ubluesettings.h
     updateservice.cpp
