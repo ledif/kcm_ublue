@@ -35,9 +35,12 @@ bool validateConfiguration(ImageVariantInfo* variantInfo)
 
 UBlueSettings::UBlueSettings(QObject *parent, const KPluginMetaData &data)
     : KQuickConfigModule(parent, data)
+    , rebaseManager(new RebaseManager(this))
 {
   setButtons(Help | Apply);
   load();
+
+  connect(rebaseManager.get(), &RebaseManager::serviceChanged, this, &UBlueSettings::onRebaseServiceChanged);
 }
 
 void UBlueSettings::load()
@@ -72,7 +75,7 @@ void UBlueSettings::save()
   // Rebase to new image if needed
   if (*currentVariantInfo != *variantInfo)
   {
-    RebaseService::startRebase(variantInfo->asImageNameAndTag());
+    rebaseManager->startRebase(variantInfo->asImageNameAndTag());
   }
 }
 
@@ -92,6 +95,12 @@ void UBlueSettings::onResetPressed()
   qDebug() << "onResetPressed " << variantInfo->asImageNameAndTag();
 }
 
+void UBlueSettings::onRebaseServiceChanged()
+{
+  qDebug() << "onRebaseServiceChanged ";
+  qDebug() << rebaseManager->getCurrentService()->prettyName;
+}
+
 ImageVariantInfo* UBlueSettings::getImageVariant()
 {
   return variantInfo.get();
@@ -103,4 +112,3 @@ void UBlueSettings::setImageVariant(ImageVariantInfo* x)
 }
 
 #include "ubluesettings.moc"
-

@@ -1,11 +1,25 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -exuo pipefail
 
 image="ghcr.io/ublue-os/${1}"
+unit="${2}"
 
-if /usr/bin/grep "^LockLayering=true" /etc/rpm-ostreed.conf &> /dev/null; then
-    bootc switch --enforce-container-sigpolicy "${image}"
-else
-    rpm-ostree rebase ostree-image-signed:docker://"${image}"
-fi
+function send-notification {
+    for user in $(w --no-header -u | awk '{print $1}' | grep -v root | sort | uniq); do
+        systemd-run --machine="${user}"@.host --user notify-send "$1" "$2"
+    done
+}
+
+send-notification "System Rebase" "Starting rebase to $image"
+
+echo "$1 $unit" > /run/ublue-rebase
+
+sleep 10
+#echo bootc switch --enforce-container-sigpolicy "${image}"
+
+#if /usr/bin/grep "^LockLayering=true" /etc/rpm-ostreed.conf &> /dev/null; then
+#    bootc switch --enforce-container-sigpolicy "${image}"
+#else
+#    rpm-ostree rebase ostree-image-signed:docker://"${image}"
+#fi

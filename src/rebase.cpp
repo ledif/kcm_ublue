@@ -2,20 +2,28 @@
 
 #include <QDBusConnection>
 #include <QDBusMessage>
+#include <QDBusReply>
 #include <QDBusVariant>
 #include <QDBusObjectPath>
 #include <QDBusInterface>
 #include <QProcess>
+#include <QFile>
+#include <QTextStream>
 
 using namespace Qt::Literals::StringLiterals;
 
-QString kRebaseServiceName = "ublue-rebase@.service"_L1;
+QString kRebaseManagerRootName = "ublue-rebase@"_L1;
+QString kRebaseManagerName =  kRebaseManagerRootName + ".service"_L1;
 
-// systemd-escape --template ublue-rebase@.service aurora-dx-nvidia-open:stable-daily
+QString kRunFilename = "/run/ublue-rebase"_L1;
+
+// Example:
+//   > systemd-escape --template ublue-rebase@.service aurora-dx-nvidia-open:stable-daily
+//   ublue-rebase@aurora\x2ddx\x2dnvidia\x2dopen:stable\x2ddaily.service
 QString getFullServiceName(const QString& rebaseTarget)
 {
   QStringList arguments;
-  arguments << "--template"_L1 << kRebaseServiceName << rebaseTarget;
+  arguments << "--template"_L1 << kRebaseManagerName << rebaseTarget;
 
   QProcess proc = QProcess(nullptr);
   proc.start("systemd-escape"_L1, arguments);
@@ -30,7 +38,84 @@ QString getFullServiceName(const QString& rebaseTarget)
   return QString::fromUtf8(proc.readAllStandardOutput()).trimmed();
 }
 
-void RebaseService::startRebase(const QString& rebaseTarget)
+
+RebaseService::RebaseService()
+{
+  QFile file(kRunFilename);
+
+  if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    qWarning() << "Failed to open file:" << file.errorString();
+  }
+
+  QTextStream in(&file);
+
+  QString line = in.readLine();
+  if (line.isNull()) {
+
+
+    QStringList parts = line.split(QChar::fromLatin1(' '), Qt::SkipEmptyParts);
+    if (parts.size() < 2) {
+      qWarning() << "Line does not contain two space-delimited strings.";
+    }
+
+    // Assign values to foo and bar
+    prettyName = parts[0];
+    unitName = parts[1];
+  } else {
+    qWarning() << "run file is empty or unreadable.";
+
+  }
+}
+
+
+
+RebaseManager::RebaseManager(QObject* parent)
+  : QObject(parent)
+{
+  if (QFile::exists(kRunFilename)) {
+    this->fileWatcher.reset(new QFileSystemWatcher(this));
+    fileWatcher->addPath(kRunFilename);
+    connect(fileWatcher.get(), &QFileSystemWatcher::fileChanged, this, &RebaseManager::runFileChanged);
+    connect(this, &RebaseManager::runFileChanged, this, &RebaseManager::onRunFileChanged);
+
+    Q_EMIT runFileChanged();
+  } else {
+    this->dirWatcher.reset(new QFileSystemWatcher(this));
+    dirWatcher->addPath("/run"_L1);
+    connect(dirWatcher.get(), &QFileSystemWatcher::directoryChanged, this, &RebaseManager::checkIfRunfileCreated);
+  }
+}
+
+void RebaseManager::checkIfRunfileCreated()
+{
+  if (QFile::exists(kRunFilename)) {
+    Q_EMIT runFileChanged();
+    this->fileWatcher.reset(new QFileSystemWatcher(this));
+    fileWatcher->addPath(kRunFilename);
+    connect(fileWatcher.get(), &QFileSystemWatcher::fileChanged, this, &RebaseManager::runFileChanged);
+
+    this->dirWatcher.reset();
+  }
+}
+
+void RebaseManager::onRunFileChanged()
+{
+  qDebug() << "onRunFileChanged";
+  if (QFile::exists(kRunFilename)) {
+    currentService.reset(new RebaseService());
+    Q_EMIT serviceChanged();
+  }
+}
+
+
+const RebaseService* RebaseManager::getCurrentService()
+{
+  return currentService.get();
+}
+
+
+
+bool RebaseManager::startRebase(const QString& rebaseTarget)
 {
   QString fullUnitName = getFullServiceName(rebaseTarget);
 
@@ -45,8 +130,10 @@ void RebaseService::startRebase(const QString& rebaseTarget)
   startUnitMessage.setInteractiveAuthorizationAllowed(true);
 
   startUnitMessage.setArguments({fullUnitName, "replace"_L1});
-  QDBusMessage startUnitReply = QDBusConnection::systemBus().call(startUnitMessage);
+  QDBusReply<QDBusObjectPath> startUnitReply = QDBusConnection::systemBus().call(startUnitMessage);
 
   qDebug() << startUnitMessage;
   qDebug() << startUnitReply;
+
+  return startUnitReply.isValid();
 }

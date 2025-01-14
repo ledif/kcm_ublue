@@ -1,6 +1,7 @@
 #pragma once
 
 #include "imagevariant.h"
+#include "rebase.h"
 
 #include <KQuickConfigModule>
 #include <QProcess>
@@ -26,8 +27,10 @@ public Q_SLOTS:
     void onResetPressed();
     void load() override;
     void save() override;
+    void onRebaseServiceChanged();
 
 private:
+  std::unique_ptr<RebaseManager> rebaseManager;
   // Values of current settings before any changes
   bool currentUpdatesEnabled;
   std::unique_ptr<ImageVariantInfo> currentVariantInfo;
