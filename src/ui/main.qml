@@ -28,7 +28,7 @@ KCMUtils.SimpleKCM {
         id: rebaseInProgressMessage
         Layout.fillWidth: true
         text: "Rebase to " + kcm.rebase.prettyName + " in progress"
-        visible: kcm.rebase.prettyName
+        visible: kcm.rebaseInProgress
 
 
         actions: [
@@ -49,12 +49,10 @@ KCMUtils.SimpleKCM {
         ]
 
         Connections {
-            target: kcm // The C++ object exposed in main.cpp
+            target: kcm
             onRebaseServiceChanged: {
-                console.log("Signal received!", kcm.rebase, kcm.rebase.prettyName);
                 rebaseInProgressMessage.text = "Rebase to " + kcm.rebase.prettyName + " in progress"
                 rebaseInProgressMessage.visible = true
-
             }
         }
     }

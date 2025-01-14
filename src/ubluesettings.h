@@ -1,7 +1,7 @@
 #pragma once
 
 #include "imagevariant.h"
-#include "rebase.h"
+#include "rebasemanager.h"
 
 #include <KQuickConfigModule>
 #include <QProcess>
@@ -12,6 +12,7 @@ class UBlueSettings : public KQuickConfigModule
   Q_PROPERTY(bool updatesEnabled MEMBER updatesEnabled NOTIFY infoChanged)
   Q_PROPERTY(ImageVariantInfo* imageVariant READ getImageVariant WRITE setImageVariant NOTIFY infoChanged)
   Q_PROPERTY(RebaseService* rebase READ getRebaseService CONSTANT)
+  Q_PROPERTY(bool rebaseInProgress READ isRebaseInProgress CONSTANT)
 
 public:
   UBlueSettings(QObject *parent, const KPluginMetaData &data);
@@ -20,6 +21,7 @@ public:
   void setImageVariant(ImageVariantInfo*);
 
   RebaseService* getRebaseService();
+  bool isRebaseInProgress();
 
 Q_SIGNALS:
     void infoChanged();

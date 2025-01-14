@@ -4,8 +4,10 @@ kcmutils_add_qml_kcm(kcm_ublue)
 target_sources(kcm_ublue PRIVATE
     imagevariant.h
     imagevariant.cpp
-    rebase.h
-    rebase.cpp
+    rebasemanager.h
+    rebasemanager.cpp
+    rebasefilewatcher.h
+    rebasefilewatcher.cpp
     ubluesettings.cpp
     ubluesettings.h
     updateservice.cpp

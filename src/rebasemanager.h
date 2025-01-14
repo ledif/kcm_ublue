@@ -1,9 +1,9 @@
 #pragma once
 
-#include <QFileSystemWatcher>
+#include "rebasefilewatcher.h"
+
 #include <QObject>
 #include <QString>
-
 
 // Representation of a systemd unit ublue-rebase@.service
 struct RebaseService : public QObject
@@ -21,7 +21,7 @@ struct RebaseService : public QObject
   Q_PROPERTY(ServiceStatus status MEMBER status CONSTANT)
 
 public:
-  RebaseService();
+  RebaseService(QString, QString);
 
   QString prettyName;
   QString unitName;
@@ -39,15 +39,11 @@ public:
 
 Q_SIGNALS:
   void serviceChanged(RebaseService*);
-  void runFileChanged();
 
-public Q_SLOTS:
-  void onRunFileChanged();
+private Q_SLOTS:
+  void onRunFileChanged(QString, QString);
 
 private:
-  void checkIfRunfileCreated();
-
   std::unique_ptr<RebaseService> currentService;
-  std::unique_ptr<QFileSystemWatcher> fileWatcher;
-  std::unique_ptr<QFileSystemWatcher> dirWatcher;
+  std::unique_ptr<RebaseFileWatcher> fileWatcher;
 };

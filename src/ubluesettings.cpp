@@ -1,6 +1,6 @@
 #include "ubluesettings.h"
 #include "updateservice.h"
-#include "rebase.h"
+#include "rebasemanager.h"
 
 #include <KPluginFactory>
 #include <KMessageDialog>
@@ -78,6 +78,11 @@ void UBlueSettings::save()
   {
     rebaseManager->startRebase(variantInfo->asImageNameAndTag());
   }
+}
+
+bool UBlueSettings::isRebaseInProgress()
+{
+  return rebaseManager->getCurrentService() != nullptr;
 }
 
 // Called when user clicks any UI element (checkbox, radio, etc)
