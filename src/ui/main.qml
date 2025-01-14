@@ -16,9 +16,30 @@ import org.kde.kcmutils as KCMUtils
 
 
 KCMUtils.SimpleKCM {
+  ColumnLayout {
+    Kirigami.InlineMessage {
+        Layout.fillWidth: true
+        text: "The ASUS and Surface streams have been discontinued. Please migrate to the hardware enablement stream."
+        type: Kirigami.MessageType.Warning
+        visible: kcm.imageVariant.isDeprecatedStream
+    }
+
+    /*Kirigami.InlineMessage {
+        Layout.fillWidth: true
+        text: "Rebase in progress"
+        visible: true
+    }*/
+
+
+    /*Kirigami.InlineMessage {
+        Layout.fillWidth: true
+        text: "The hardware enablement image can only be on the latest stream. See "
+        type: Kirigami.MessageType.Warning
+        visible: true
+    }*/
 
     Kirigami.FormLayout {
-        anchors.fill: parent
+        //anchors.fill: parent
         id: rootLayout
 
         Item {
@@ -173,6 +194,7 @@ KCMUtils.SimpleKCM {
             onToggled: kcm.imageVariant.devExperience = dxCheckbox.checked
         }
     }
+  }
 }
 
 

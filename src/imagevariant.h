@@ -38,9 +38,10 @@ private:
   Q_PROPERTY(bool devExperience MEMBER devExperience NOTIFY infoChanged)
   Q_PROPERTY(HWEFlagSet* hweFlags READ getHWEFlags WRITE setHWEFlags NOTIFY infoChanged)
   Q_PROPERTY(UpdateStream updateStream MEMBER updateStream NOTIFY infoChanged)
+  Q_PROPERTY(bool isDeprecatedStream MEMBER isDeprecatedStream CONSTANT)
 
 public:
-  ImageVariantInfo(QObject*, HWEFlagSet*, bool, UpdateStream);
+  ImageVariantInfo(QObject*, HWEFlagSet*, bool, UpdateStream, bool);
   ImageVariantInfo* clone();
   bool operator==(const ImageVariantInfo&) const;
 
@@ -59,4 +60,5 @@ private:
   std::unique_ptr<HWEFlagSet> hweFlags;
   bool devExperience = false;
   UpdateStream updateStream = unknown;
+  bool isDeprecatedStream;
 };

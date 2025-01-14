@@ -43,17 +43,18 @@ std::pair<QString, QString> getImageNameStream()
   };
 }
 
-ImageVariantInfo::ImageVariantInfo(QObject* parent, HWEFlagSet* hweFlags, bool devExperience, UpdateStream updateStream)
+ImageVariantInfo::ImageVariantInfo(QObject* parent, HWEFlagSet* hweFlags, bool devExperience, UpdateStream updateStream, bool isDeprecatedStream)
   : QObject(parent)
   , hweFlags(hweFlags)
   , devExperience(devExperience)
   , updateStream(updateStream)
+  , isDeprecatedStream(isDeprecatedStream)
 {
 }
 
 ImageVariantInfo* ImageVariantInfo::clone()
 {
-  return new ImageVariantInfo(nullptr, this->hweFlags->clone(), this->devExperience, this->updateStream);
+  return new ImageVariantInfo(nullptr, this->hweFlags->clone(), this->devExperience, this->updateStream, this->isDeprecatedStream);
 }
 
 bool ImageVariantInfo::operator==(const ImageVariantInfo& other) const
@@ -90,15 +91,12 @@ ImageVariantInfo* ImageVariantInfo::loadFromDisk(QObject* parent)
   if (imageName.contains("hwe"_L1))
     hweFlags->hwe = true;
 
-  // TODO: display a deprecation warning if user is on asus or surface
-  /*if (imageName.contains("asus"_L1))
-
-  if (imageName.contains("surface"_L1))*/
+  bool isDeprecatedStream = imageName.contains("asus"_L1) || imageName.contains("surface"_L1);
 
   // Dev experience
   bool devExperience = imageName.contains("-dx"_L1);
 
-  return new ImageVariantInfo{parent, hweFlags, devExperience, updateStream};
+  return new ImageVariantInfo{parent, hweFlags, devExperience, updateStream, isDeprecatedStream};
 }
 
 // Create the string representation of this image (e.g., aurora-dx-hwe)
