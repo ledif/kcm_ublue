@@ -127,7 +127,16 @@ void UBlueSettings::setImageVariant(ImageVariantInfo* x)
 void UBlueSettings::onRebaseCancelButtonPressed()
 {
   qDebug() << "onRebaseCancelButtonPressed";
-  bool canceled = rebaseManager->getCurrentService()->cancel();
+  if (!rebaseManager->getCurrentService()->cancel())
+  {
+    QString errorMessage = "Could not cancel rebase using systemd. Try to manually cancel the activated systemd units with: systemctl --legend=false list-units 'ublue-rebase@*' | awk '{print $2}' | xargs systemctl stop"_L1;
+    auto *dlg = new KMessageDialog(KMessageDialog::Error, errorMessage);
+    dlg->setCaption(QStringLiteral("Error"));
+
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->setWindowModality(Qt::WindowModal);
+    dlg->show();
+  }
 }
 
 void UBlueSettings::onRebaseDetailsButtonPressed()
