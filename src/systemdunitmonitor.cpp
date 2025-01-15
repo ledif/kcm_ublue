@@ -9,7 +9,7 @@
 
 using namespace Qt::Literals::StringLiterals;
 
-SystemdUnitMonitor::SystemdUnitMonitor(QString unitName)
+QString SystemdUnitMonitor::getSystemdUnitObjectPath(const QString& unitName)
 {
   QDBusMessage getUnitMessage = QDBusMessage::createMethodCall(
     "org.freedesktop.systemd1"_L1,
@@ -25,10 +25,16 @@ SystemdUnitMonitor::SystemdUnitMonitor(QString unitName)
   qDebug() << getUnitReply;
 
   QDBusObjectPath objectPath = getUnitReply.arguments().at(0).value<QDBusObjectPath>();
+  return objectPath.path();
+}
+
+SystemdUnitMonitor::SystemdUnitMonitor(QString unitName)
+{
+  QString objectPath = SystemdUnitMonitor::getSystemdUnitObjectPath(unitName);
 
   bool connected = QDBusConnection::systemBus().connect(
     "org.freedesktop.systemd1"_L1,
-    objectPath.path(),
+    objectPath,
     "org.freedesktop.DBus.Properties"_L1,
     "PropertiesChanged"_L1,
     this,
@@ -36,11 +42,34 @@ SystemdUnitMonitor::SystemdUnitMonitor(QString unitName)
   );
 
   if (!connected)
-    qWarning() << "Failed to connect to systemd unit's PropertiesChanged signal for " << objectPath.path();
+    qWarning() << "Failed to connect to systemd unit's PropertiesChanged signal for " << objectPath;
   else
     qDebug() << "Connected to systemd unit's PropertiesChanged signal.";
 }
 
+QString SystemdUnitMonitor::getCurrentActiveState(QString unitName)
+{
+  QString objectPath = SystemdUnitMonitor::getSystemdUnitObjectPath(unitName);
+
+  QDBusMessage activeStateMessage = QDBusMessage::createMethodCall(
+    "org.freedesktop.systemd1"_L1,
+    objectPath,
+    "org.freedesktop.DBus.Properties"_L1,
+    "Get"_L1
+  );
+
+  activeStateMessage.setArguments({"org.freedesktop.systemd1.Unit"_L1, "ActiveState"_L1});
+  QDBusMessage activeStateReply = QDBusConnection::systemBus().call(activeStateMessage);
+
+  qDebug() << activeStateMessage;
+  qDebug() << activeStateReply;
+
+  QString activeState = activeStateReply.arguments().at(0).value<QDBusVariant>().variant().value<QString>();
+
+  qDebug() << activeState;
+
+  return activeState;
+}
 
 void SystemdUnitMonitor::onPropertiesChanged(const QString &interface, const QVariantMap &changedProperties, const QStringList&)
 {

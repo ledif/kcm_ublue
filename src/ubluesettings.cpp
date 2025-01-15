@@ -42,6 +42,8 @@ UBlueSettings::UBlueSettings(QObject *parent, const KPluginMetaData &data)
 
   connect(this->getRebaseService(), &RebaseService::stateChanged, this, &UBlueSettings::onRebaseServiceChanged);
   connect(this->rebaseManager.get(), &RebaseManager::rebaseStarted, this, &UBlueSettings::onRebaseServiceChanged);
+
+  rebaseManager->tryReload();
 }
 
 void UBlueSettings::load()
@@ -120,6 +122,18 @@ ImageVariantInfo* UBlueSettings::getImageVariant()
 void UBlueSettings::setImageVariant(ImageVariantInfo* x)
 {
   variantInfo.reset(x);
+}
+
+void UBlueSettings::onRebaseCancelButtonPressed()
+{
+  qDebug() << "onRebaseCancelButtonPressed";
+  bool canceled = rebaseManager->getCurrentService()->cancel();
+}
+
+void UBlueSettings::onRebaseDetailsButtonPressed()
+{
+  qDebug() << "onRebaseDetailsButtonPressed";
+
 }
 
 #include "ubluesettings.moc"

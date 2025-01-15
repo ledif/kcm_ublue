@@ -24,6 +24,8 @@ public:
   RebaseService() = default;
   void reload(QString, QString);
 
+  bool cancel();
+
   QString prettyName;
   QString unitName;
   ServiceStatus status = noService;

@@ -23,6 +23,9 @@ public:
   RebaseService* getRebaseService();
   bool isRebaseInProgress();
 
+  Q_INVOKABLE void onRebaseCancelButtonPressed();
+  Q_INVOKABLE void onRebaseDetailsButtonPressed();
+
 Q_SIGNALS:
     void infoChanged();
     void resetPressed();

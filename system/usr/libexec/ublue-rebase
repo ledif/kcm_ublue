@@ -17,10 +17,10 @@ send-notification "System Rebase" "Starting rebase to $1"
 echo "$1 $unit" > /run/ublue-rebase.lock
 mv /run/ublue-rebase.lock /run/ublue-rebase
 
-sleep 3
+sleep 30
 
-send-notification "System Rebase" "Rebase failed. Check logs for more details. TODO: put path here"
-exit 1
+#send-notification "System Rebase" "Rebase failed. Check logs for more details. TODO: put path here"
+#exit 1
 
 send-notification "System Rebase" "Rebase completed. Please reboot to use the new image."
 

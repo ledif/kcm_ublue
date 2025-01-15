@@ -9,6 +9,10 @@ class SystemdUnitMonitor : public QObject
 
 public:
   SystemdUnitMonitor(QString unitName);
+  QString getCurrentActiveState(QString unitName);
+
+  static QString getSystemdUnitObjectPath(const QString& unitName);
+
 
 Q_SIGNALS:
   void unitStateChanged(QString newState);

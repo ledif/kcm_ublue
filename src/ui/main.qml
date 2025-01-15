@@ -33,18 +33,20 @@ KCMUtils.SimpleKCM {
 
         actions: [
             Kirigami.Action {
+                id: rebaseDetailsButton
                 enabled: true
                 text: qsTr("Details")
                 icon.name: "view-list-details"
                 onTriggered: {
-                    actionsMessage.text = actionsMessage.initialText + " Peekaboo!";
+                    kcm.onRebaseDetailsButtonPressed()
                 }
             },
             Kirigami.Action {
+                id: rebaseCancelButton
                 enabled: true
                 text: qsTr("Cancel")
                 icon.name: "cancel"
-                onTriggered: actionsMessage.text = actionsMessage.initialText
+                onTriggered: kcm.onRebaseCancelButtonPressed()
             }
         ]
 
@@ -58,8 +60,13 @@ KCMUtils.SimpleKCM {
               } else if (kcm.rebase.status == 2) {
                 rebaseInProgressMessage.text = "Rebase to " + kcm.rebase.prettyName + " failed"
                 rebaseInProgressMessage.type = Kirigami.MessageType.Error
+              } else if (kcm.rebase.status == 3) {
+                rebaseInProgressMessage.text = "Rebase successful. New changes available on reboot."
+                rebaseInProgressMessage.type = Kirigami.MessageType.Positive
+                
               }
-
+              rebaseCancelButton.visible = kcm.rebase.status == 0 || kcm.rebase.status == 1
+              rebaseDetailsButton.visible = kcm.rebase.status != 3
               rebaseInProgressMessage.visible = true
 
             }

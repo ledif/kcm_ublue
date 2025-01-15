@@ -41,10 +41,15 @@ RebaseManager::RebaseManager(QObject* parent)
   , currentService(new RebaseService())
   , fileWatcher(new RebaseFileWatcher(this))
 {
-  if (auto parsedRunFile = fileWatcher->tryParse(); parsedRunFile)
-    currentService->reload(parsedRunFile->first, parsedRunFile->second);
-
   connect(fileWatcher.get(), &RebaseFileWatcher::runFileChanged, this, &RebaseManager::onRunFileChanged);
+}
+
+void RebaseManager::tryReload()
+{
+  if (auto parsedRunFile = fileWatcher->tryParse(); parsedRunFile)
+  {
+    currentService->reload(parsedRunFile->first, parsedRunFile->second);
+  }
 }
 
 void RebaseManager::onRunFileChanged(QString prettyName, QString unitName)

@@ -13,7 +13,10 @@ public:
   RebaseManager(QObject*);
 
   bool startRebase(const QString&);
+  
   RebaseService* getCurrentService();
+
+  void tryReload();
 
 Q_SIGNALS:
   void rebaseStarted();
