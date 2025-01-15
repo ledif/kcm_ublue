@@ -26,14 +26,16 @@ public:
 Q_SIGNALS:
     void infoChanged();
     void resetPressed();
-    void rebaseServiceChanged(RebaseService*);
+    void rebaseServiceChanged();
 
 public Q_SLOTS:
     void onInfoChanged();
     void onResetPressed();
     void load() override;
     void save() override;
-    void onRebaseServiceChanged(RebaseService*);
+
+private Q_SLOTS:
+    void onRebaseServiceChanged();
 
 private:
   std::unique_ptr<RebaseManager> rebaseManager;

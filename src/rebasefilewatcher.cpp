@@ -51,28 +51,27 @@ std::optional<std::pair<QString, QString>> RebaseFileWatcher::tryParse()
 
   if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
     qWarning() << "run file exists but is unreadable";
+    return {};
   }
 
   QTextStream in(&file);
+  QString line;
+  in.readLineInto(&line);
 
-  QString line = in.readLine();
-  QString prettyName;
-  QString unitName;
-  
-  if (!line.isNull())
+  if (line.isEmpty())
   {
-    QStringList parts = line.split(QChar::fromLatin1(' '), Qt::SkipEmptyParts);
-    if (parts.size() < 2)
-      qWarning() << "run file does not contain two space-delimited strings.";
+    qWarning() << "run file exists but is empty";
+    return {};
+  }
 
-    prettyName = parts[0];
-    unitName = parts[1];
-  }
-  else 
+  QStringList parts = line.split(QChar::fromLatin1(' '), Qt::SkipEmptyParts);
+  if (parts.size() < 2)
   {
-    qWarning() << "run file exists but is empty or unreadable.";
+    qWarning() << "run file does not contain two space-delimited fields";
+    return {};
   }
-  return std::make_pair(prettyName, unitName);
+
+  return std::make_pair(parts[0], parts[1]);
 }
 
 void RebaseFileWatcher::onRunFileCreatedOrChanged()

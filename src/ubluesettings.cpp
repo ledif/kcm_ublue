@@ -40,8 +40,8 @@ UBlueSettings::UBlueSettings(QObject *parent, const KPluginMetaData &data)
   setButtons(Help | Apply);
   load();
 
-  connect(rebaseManager.get(), &RebaseManager::serviceChanged, this, &UBlueSettings::rebaseServiceChanged);
-  connect(this, &UBlueSettings::rebaseServiceChanged, this, &UBlueSettings::onRebaseServiceChanged);
+  connect(this->getRebaseService(), &RebaseService::stateChanged, this, &UBlueSettings::onRebaseServiceChanged);
+  connect(this->rebaseManager.get(), &RebaseManager::rebaseStarted, this, &UBlueSettings::onRebaseServiceChanged);
 }
 
 void UBlueSettings::load()
@@ -101,10 +101,10 @@ void UBlueSettings::onResetPressed()
   qDebug() << "onResetPressed " << variantInfo->asImageNameAndTag();
 }
 
-void UBlueSettings::onRebaseServiceChanged(RebaseService* rebaseService)
+void UBlueSettings::onRebaseServiceChanged()
 {
-  qDebug() << "onRebaseServiceChanged ";
-  qDebug() << rebaseService->prettyName;
+  Q_EMIT rebaseServiceChanged();
+  qDebug() << "onRebaseServiceChanged " << getRebaseService()->prettyName << getRebaseService()->status;
 }
 
 RebaseService* UBlueSettings::getRebaseService()

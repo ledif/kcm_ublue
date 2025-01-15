@@ -11,9 +11,11 @@ function send-notification {
     done
 }
 
-send-notification "System Rebase" "Starting rebase to $image"
+send-notification "System Rebase" "Starting rebase to $1"
 
-echo "$1 $unit" > /run/ublue-rebase
+# Writing directly to /run/ublue-rebase causes weird non-atomic behavior when reading the file back with Qt
+echo "$1 $unit" > /run/ublue-rebase.lock
+mv /run/ublue-rebase.lock /run/ublue-rebase
 
 sleep 3
 

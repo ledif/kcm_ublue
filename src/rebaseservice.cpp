@@ -18,12 +18,13 @@ void RebaseService::reload(QString pname, QString uname)
   if (!unitName.isEmpty())
   {
     systemdUnitMonitor.reset(new SystemdUnitMonitor{unitName});
-    connect(systemdUnitMonitor.get(), &SystemdUnitMonitor::unitStateChanged, this, &RebaseService::onSystemdStateChange);
+    connect(systemdUnitMonitor.get(), &SystemdUnitMonitor::unitStateChanged, this, &RebaseService::onSystemdStateChanged);
   }
 }
 
-void RebaseService::onSystemdStateChange(QString activeState)
+void RebaseService::onSystemdStateChanged(QString activeState)
 {
+  qDebug() << "onSystemdStateChanged" << activeState;
   if (activeState == "active"_L1)
     status = ServiceStatus::started;
   else if (activeState == "inactive"_L1)
@@ -31,5 +32,5 @@ void RebaseService::onSystemdStateChange(QString activeState)
   else if (activeState == "failed"_L1)
     status = ServiceStatus::failed;
 
-  Q_EMIT stateChange(status);
+  Q_EMIT stateChanged();
 }

@@ -16,7 +16,7 @@ public:
   RebaseService* getCurrentService();
 
 Q_SIGNALS:
-  void serviceChanged(RebaseService*);
+  void rebaseStarted();
 
 private Q_SLOTS:
   void onRunFileChanged(QString, QString);

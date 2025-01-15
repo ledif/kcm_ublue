@@ -27,7 +27,7 @@ KCMUtils.SimpleKCM {
     Kirigami.InlineMessage {
         id: rebaseInProgressMessage
         Layout.fillWidth: true
-        text: "Rebase to " + kcm.rebase.prettyName + " in progress"
+        text: "placeholder"
         visible: kcm.rebaseInProgress
 
 
@@ -51,8 +51,17 @@ KCMUtils.SimpleKCM {
         Connections {
             target: kcm
             onRebaseServiceChanged: {
+              console.log("onRebaseServiceChanged", kcm.rebase.status)
+              
+              if (kcm.rebase.status == 0 || kcm.rebase.status == 1) {
                 rebaseInProgressMessage.text = "Rebase to " + kcm.rebase.prettyName + " in progress"
-                rebaseInProgressMessage.visible = true
+              } else if (kcm.rebase.status == 2) {
+                rebaseInProgressMessage.text = "Rebase to " + kcm.rebase.prettyName + " failed"
+                rebaseInProgressMessage.type = Kirigami.MessageType.Error
+              }
+
+              rebaseInProgressMessage.visible = true
+
             }
         }
     }

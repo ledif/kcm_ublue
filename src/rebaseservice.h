@@ -29,10 +29,10 @@ public:
   ServiceStatus status = noService;
 
 Q_SIGNALS:
-  void stateChange(ServiceStatus);
+  void stateChanged();
 
 private Q_SLOTS:
-  void onSystemdStateChange(QString);
+  void onSystemdStateChanged(QString);
 
 private:
   std::unique_ptr<SystemdUnitMonitor> systemdUnitMonitor;

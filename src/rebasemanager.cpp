@@ -49,8 +49,10 @@ RebaseManager::RebaseManager(QObject* parent)
 
 void RebaseManager::onRunFileChanged(QString prettyName, QString unitName)
 {
+  qDebug() << "run file changed " << prettyName;
   currentService->reload(prettyName, unitName);
-  Q_EMIT serviceChanged(currentService.get());
+  Q_EMIT rebaseStarted();
+  
 }
 
 RebaseService* RebaseManager::getCurrentService()
