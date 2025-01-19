@@ -1,6 +1,6 @@
 # Design
 
-The rebase processes uses a shell script `/usr/libexec/ublue-rebase` that is called by a systemd unit called `ublue-rebase@.service`. This is a templated unit that can be parameterized by the image name to rebase to. For example, to rebase to the `aurora-dx:stable` image, the service launched would be `ublue-rebase@aurora\x2ddx:stable.service`.
+The rebase processes uses a shell script `/usr/libexec/ublue-rebase` that is called by a systemd unit `ublue-rebase@.service`. This is a templated unit that can be parameterized by the image name to rebase to. For example, to rebase to the `aurora-dx:stable` image, the service launched would be `ublue-rebase@aurora\x2ddx:stable.service`.
 
 The workflow works as follows:
 - User selects a new image configuration (e.g., `aurora-dx:stable`) and clicks "Apply"

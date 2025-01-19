@@ -66,7 +66,7 @@ KCMUtils.SimpleKCM {
                 
               }
               rebaseCancelButton.visible = kcm.rebase.status == 0 || kcm.rebase.status == 1
-              rebaseDetailsButton.visible = kcm.rebase.status != 3
+              rebaseDetailsButton.visible = true
               rebaseInProgressMessage.visible = true
 
             }

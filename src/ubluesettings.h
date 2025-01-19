@@ -41,7 +41,6 @@ private Q_SLOTS:
     void onRebaseServiceChanged();
 
 private:
-  std::unique_ptr<RebaseManager> rebaseManager;
   // Values of current settings before any changes
   bool currentUpdatesEnabled;
   std::unique_ptr<ImageVariantInfo> currentVariantInfo;
@@ -49,5 +48,8 @@ private:
   // Values of (potentially new) settings
   std::unique_ptr<ImageVariantInfo> variantInfo;
   bool updatesEnabled;
+
+  std::unique_ptr<RebaseManager> rebaseManager;
+  std::unique_ptr<QProcess> rebaseDetailsProcess;
 };
 

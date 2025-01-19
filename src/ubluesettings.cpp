@@ -3,8 +3,12 @@
 #include "rebasemanager.h"
 
 #include <KPluginFactory>
+#include <KPopupFrame>
 #include <KMessageDialog>
 #include <QProcessEnvironment>
+#include <QPlainTextEdit>
+
+#include <iostream>
 
 using namespace Qt::Literals::StringLiterals;
 
@@ -141,8 +145,21 @@ void UBlueSettings::onRebaseCancelButtonPressed()
 
 void UBlueSettings::onRebaseDetailsButtonPressed()
 {
-  qDebug() << "onRebaseDetailsButtonPressed";
+  qDebug() << "onRebaseDetailsButtonPressed" << rebaseManager->getCurrentService()->unitName;
 
+    QStringList arguments;
+
+    QString unitName = rebaseManager->getCurrentService()->unitName;
+
+    // It was a nightmare figuring out how to pass unit names with backslashes
+    unitName.replace("\\"_L1, "\\\\"_L1);
+
+    QString command = "set -x; journalctl -fu "_L1 + unitName;
+    arguments <<  "--"_L1 << "bash"_L1 << "-c"_L1 << command;
+    qDebug() << rebaseManager->getCurrentService()->unitName.toStdString();
+
+    rebaseDetailsProcess.reset(new QProcess(this));
+    rebaseDetailsProcess->start(kTerminalApp, arguments);
 }
 
 #include "ubluesettings.moc"

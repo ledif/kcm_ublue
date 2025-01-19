@@ -54,7 +54,7 @@ void RebaseManager::tryReload()
 
 void RebaseManager::onRunFileChanged(QString prettyName, QString unitName)
 {
-  qDebug() << "run file changed " << prettyName;
+  qDebug() << "run file changed " << prettyName << unitName;
   currentService->reload(prettyName, unitName);
   Q_EMIT rebaseStarted();
   

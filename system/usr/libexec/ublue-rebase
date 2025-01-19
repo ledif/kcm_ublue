@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 
-set -exuo pipefail
+set -xuo pipefail
 
 image="ghcr.io/ublue-os/${1}"
 unit="${2}"
 
 function send-notification {
     for user in $(w --no-header -u | awk '{print $1}' | grep -v root | sort | uniq); do
+        echo "Notifying $user: $1 $2"
         systemd-run --machine="${user}"@.host --user notify-send "$1" "$2"
     done
 }
@@ -17,18 +18,18 @@ send-notification "System Rebase" "Starting rebase to $1"
 echo "$1 $unit" > /run/ublue-rebase.lock
 mv /run/ublue-rebase.lock /run/ublue-rebase
 
-sleep 30
-
-#send-notification "System Rebase" "Rebase failed. Check logs for more details. TODO: put path here"
-#exit 1
+if /usr/bin/grep "^LockLayering=true" /etc/rpm-ostreed.conf &> /dev/null; then
+    bootc switch --enforce-container-sigpolicy "${image}"
+    if [[ $? -ne 0 ]]; then
+        send-notification "System Rebase" "Rebase failed. Check system settings for more details."
+        exit 1
+    fi
+else
+    rpm-ostree rebase ostree-image-signed:docker://"${image}"
+    if [[ $? -ne 0 ]]; then
+        send-notification "System Rebase" "Rebase failed. Check system settings for more details."
+        exit 1
+    fi
+fi
 
 send-notification "System Rebase" "Rebase completed. Please reboot to use the new image."
-
-
-#echo bootc switch --enforce-container-sigpolicy "${image}"
-
-#if /usr/bin/grep "^LockLayering=true" /etc/rpm-ostreed.conf &> /dev/null; then
-#    bootc switch --enforce-container-sigpolicy "${image}"
-#else
-#    rpm-ostree rebase ostree-image-signed:docker://"${image}"
-#fi
