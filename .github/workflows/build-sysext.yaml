@@ -59,7 +59,7 @@ jobs:
         run: |
           just build
           ls -l
-          mv *.raw ../artifacts/
+          mv *.raw artifacts/
 
       - name: Create a release
         if: (github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
