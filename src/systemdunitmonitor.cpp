@@ -32,24 +32,29 @@ SystemdUnitMonitor::SystemdUnitMonitor(QString unitName)
 {
   QString objectPath = SystemdUnitMonitor::getSystemdUnitObjectPath(unitName);
 
-  bool connected = QDBusConnection::systemBus().connect(
-    "org.freedesktop.systemd1"_L1,
-    objectPath,
-    "org.freedesktop.DBus.Properties"_L1,
-    "PropertiesChanged"_L1,
-    this,
-    SLOT(onPropertiesChanged(QString, QVariantMap, QStringList))
-  );
+  if (!objectPath.isEmpty())
+  {
+    bool connected = QDBusConnection::systemBus().connect(
+      "org.freedesktop.systemd1"_L1,
+      objectPath,
+      "org.freedesktop.DBus.Properties"_L1,
+      "PropertiesChanged"_L1,
+      this,
+      SLOT(onPropertiesChanged(QString, QVariantMap, QStringList))
+    );
 
-  if (!connected)
-    qWarning() << "Failed to connect to systemd unit's PropertiesChanged signal for " << objectPath;
-  else
-    qDebug() << "Connected to systemd unit's PropertiesChanged signal.";
+    if (!connected)
+      qWarning() << "Failed to connect to systemd unit's PropertiesChanged signal for " << objectPath;
+    else
+      qDebug() << "Connected to systemd unit's PropertiesChanged signal.";
+  }
 }
 
 QString SystemdUnitMonitor::getCurrentActiveState(QString unitName)
 {
   QString objectPath = SystemdUnitMonitor::getSystemdUnitObjectPath(unitName);
+  if (objectPath.isEmpty())
+    return ""_L1;
 
   QDBusMessage activeStateMessage = QDBusMessage::createMethodCall(
     "org.freedesktop.systemd1"_L1,
