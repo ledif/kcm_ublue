@@ -75,7 +75,7 @@ jobs:
           gh release delete \
             --cleanup-tag \
             --yes \
-            "${SHORTNAME}-${RELEASE}${arch}" \
+            "aurora-41-x86-64 \
             || true
 
           gh release create \
