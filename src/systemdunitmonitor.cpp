@@ -53,8 +53,10 @@ SystemdUnitMonitor::SystemdUnitMonitor(QString unitName)
 QString SystemdUnitMonitor::getCurrentActiveState(QString unitName)
 {
   QString objectPath = SystemdUnitMonitor::getSystemdUnitObjectPath(unitName);
+
+  // This means the unit is not loaded, which happens when it finishes sucessfully
   if (objectPath.isEmpty())
-    return ""_L1;
+    return "inactive"_L1;
 
   QDBusMessage activeStateMessage = QDBusMessage::createMethodCall(
     "org.freedesktop.systemd1"_L1,

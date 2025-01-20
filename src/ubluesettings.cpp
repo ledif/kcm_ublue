@@ -61,6 +61,8 @@ void UBlueSettings::load()
   connect(variantInfo.get(), &ImageVariantInfo::infoChanged, this, &UBlueSettings::onInfoChanged);
   connect(variantInfo->getHWEFlags(), &HWEFlagSet::infoChanged, this, &UBlueSettings::onInfoChanged);
 
+  rebaseManager->tryReload();
+
   Q_EMIT onResetPressed();
 }
 
