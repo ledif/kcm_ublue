@@ -1,9 +1,8 @@
 # KCM for Universal Blue images
 
-![Screenshot_20250112_005607](https://github.com/user-attachments/assets/108de805-4aa3-4877-ad3e-246d5a13e403)
+![Screenshot_20250119_222509](https://github.com/user-attachments/assets/1f083300-fb00-428f-9fca-2ae6e51dd32d)
 
 ## Installation
-
 
 > [!WARNING] 
 > Installing a sysext with SELinux enabled can lead to an unstable system. Before installing this extension, please first verify that SELinux is set to permissive in `/etc/selinux/config`. If it is set to "enforcing," change it to "permissive" and reboot before continuing.
