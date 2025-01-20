@@ -58,7 +58,8 @@ jobs:
       - name: "Build sysext"
         run: |
           just build
-          mv "*.raw" "../artifacts/"
+          ls -l
+          mv *.raw ../artifacts/
 
       - name: Create a release
         if: (github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
