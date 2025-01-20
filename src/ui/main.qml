@@ -57,18 +57,17 @@ KCMUtils.SimpleKCM {
               
               if (kcm.rebase.status == 0 || kcm.rebase.status == 1) {
                 rebaseInProgressMessage.text = "Rebase to " + kcm.rebase.prettyName + " in progress"
+                rebaseInProgressMessage.type = Kirigami.MessageType.Information
               } else if (kcm.rebase.status == 2) {
                 rebaseInProgressMessage.text = "Rebase to " + kcm.rebase.prettyName + " failed"
                 rebaseInProgressMessage.type = Kirigami.MessageType.Error
               } else if (kcm.rebase.status == 3) {
                 rebaseInProgressMessage.text = "Rebase successful. New changes available on reboot."
                 rebaseInProgressMessage.type = Kirigami.MessageType.Positive
-                
               }
               rebaseCancelButton.visible = kcm.rebase.status == 0 || kcm.rebase.status == 1
               rebaseDetailsButton.visible = true
               rebaseInProgressMessage.visible = true
-
             }
         }
     }

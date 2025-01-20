@@ -156,7 +156,7 @@ void UBlueSettings::onRebaseDetailsButtonPressed()
     // It was a nightmare figuring out how to pass unit names with backslashes
     unitName.replace("\\"_L1, "\\\\"_L1);
 
-    QString command = "set -x; journalctl -fu "_L1 + unitName;
+    QString command = "set -x; journalctl -n 50 -fu "_L1 + unitName;
     arguments <<  "--"_L1 << "bash"_L1 << "-c"_L1 << command;
     qDebug() << rebaseManager->getCurrentService()->unitName.toStdString();
 
