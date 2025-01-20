@@ -1,0 +1,83 @@
+# Borrowed from https://github.com/travier/fedora-sysexts/blob/main/.github/workflows/sysexts-fedora-kinoite-41-x86_64.yml
+name: "Build sysext"
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  #schedule:
+  #  - cron:  '0 0 * * MON'
+  workflow_dispatch:
+
+# Needed to allow creating a release
+permissions:
+  contents: write
+
+# Prevent multiple workflow runs from racing to ensure that pushes are made
+# sequentialy for the main branch. Also cancel in progress workflow runs.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}-${{ inputs.sysext }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    runs-on: "ubuntu-24.04"
+    container:
+      image: "quay.io/fedora/fedora:41"
+      options: "--privileged --security-opt label=disable --user 0:0 -v /proc/:/host/proc/:rw"
+    steps:
+      - name: "Install tools"
+        run: |
+          dnf install -y \
+            cpio \
+            dnf5-plugins \
+            erofs-utils \
+            git \
+            jq \
+            just \
+            podman \
+            wget
+          dnf config-manager addrepo --from-repofile="https://cli.github.com/packages/rpm/gh-cli.repo"
+          dnf install -y gh --repo gh-cli
+
+      - name: "Checkout repo"
+        uses: actions/checkout@v4
+
+      - name: "Setup artifacts directory"
+        run: |
+          mkdir -p artifacts
+
+      - name: "Mark directory as safe"
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git fetch --no-tags --prune --depth=1 origin +refs/heads/main:refs/remotes/origin/main
+
+      - name: "Build sysext"
+        run: |
+          just build
+          mv "*.raw" "../artifacts/"
+
+      - name: Create a release
+        if: (github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
+        run: |
+          git config --global --add safe.directory "${PWD}"
+
+          cd ./artifacts
+
+          sha256sum *.raw > SHA256SUMS
+
+          gh release delete \
+            --cleanup-tag \
+            --yes \
+            "${SHORTNAME}-${RELEASE}${arch}" \
+            || true
+
+          gh release create \
+            --title "Universal Blue KCM" \
+            --notes "KDE Configuration Module for Universal Blue images" \
+            "aurora-41-x86-64" \
+            --latest="true" \
+            ./*
