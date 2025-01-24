@@ -32,26 +32,27 @@ KDE Configuration Module (KCM) for Aurora.
 %autosetup -n %{name}-%{version}
 
 %build
-  mkdir build
-  cmake -B build -DCMAKE_INSTALL_PREFIX=%{buildroot}
-  cmake --build build
+mkdir build
+cmake -B build
+cmake --build build
 
 %install
-  cmake --install build
-
-  mkdir %{buildroot}/lib64/qt6
-  mv %{buildroot}/lib64/plugins %{buildroot}/lib64/qt6
+install -Dm0755 ./build/bin/plasma/kcms/systemsettings/kcm_ublue.so %{buildroot}%{_libdir}/qt6/plugins/plasma/kcms/systemsettings/kcm_ublue.so
+#install -Dm0755 ./system/usr/share/applications/kcm_ublue.desktop %{buildroot}%{_datadir}/applications/kcm_ublue.desktop
+install -Dm0755 ./system/usr/share/polkit-1/actions/org.ublue.rebase.policy %{buildroot}%{_datadir}/polkit-1/actions/org.ublue.rebase.policy
+install -Dm0755 ./system/usr/share/polkit-1/rules.d/21-ublue-rebase.rules %{buildroot}%{_datadir}/polkit-1/rules.d/21-ublue-rebase.rules
+install -Dm0755 ./system/usr/share/polkit-1/rules.d/22-ublue-rebase-systemd.rules %{buildroot}%{_datadir}/polkit-1/rules.d/22-ublue-rebase-systemd.rules
+install -Dm0755 ./system/usr/lib/systemd/system/ublue-rebase@.service %{buildroot}%{_prefix}/lib/systemd/system/ublue-rebase@.service
+install -Dm0755 ./system/usr/libexec//ublue-rebase %{buildroot}%{_libexecdir}/libexec/ublue-rebase
 
 %files
-
 %{_libdir}/qt6/plugins/plasma/kcms/systemsettings/kcm_ublue.so
-%{_datadir}/applications/kcm_ublue.desktop
+#%{_datadir}/applications/kcm_ublue.desktop
 %{_datadir}/polkit-1/actions/org.ublue.rebase.policy
 %{_datadir}/polkit-1/rules.d/21-ublue-rebase.rules
 %{_datadir}/polkit-1/rules.d/22-ublue-rebase-systemd.rules
 %{_prefix}/lib/systemd/system/ublue-rebase@.service
 %{_libexecdir}/libexec/ublue-rebase
-
 
 %changelog
 %autochangelog
