@@ -1,10 +1,10 @@
 Name:           kcm_ublue
-Version:        0.5.0
-Release:        2%{?dist}
+Version:        0.5.1
+Release:        1%{?dist}
 Summary:        KCM for KDE-based Universal Blue images
 
 URL:            https://github.com/ledif/kcm_ublue
-Source:         https://github.com/ledif/kcm_ublue/archive/refs/tags/v0.5.0.zip
+Source:         https://github.com/ledif/kcm_ublue/archive/refs/tags/v0.5.1.zip
 License:        Apache-2.0
 
 BuildRequires:  cmake
@@ -43,7 +43,7 @@ install -Dm0755 ./system/usr/share/polkit-1/actions/org.ublue.rebase.policy %{bu
 install -Dm0755 ./system/usr/share/polkit-1/rules.d/21-ublue-rebase.rules %{buildroot}%{_datadir}/polkit-1/rules.d/21-ublue-rebase.rules
 install -Dm0755 ./system/usr/share/polkit-1/rules.d/22-ublue-rebase-systemd.rules %{buildroot}%{_datadir}/polkit-1/rules.d/22-ublue-rebase-systemd.rules
 install -Dm0755 ./system/usr/lib/systemd/system/ublue-rebase@.service %{buildroot}%{_prefix}/lib/systemd/system/ublue-rebase@.service
-install -Dm0755 ./system/usr/libexec//ublue-rebase %{buildroot}%{_libexecdir}/libexec/ublue-rebase
+install -Dm0755 ./system/usr/libexec/ublue-rebase %{buildroot}%{_libexecdir}/ublue-rebase
 
 %files
 %{_libdir}/qt6/plugins/plasma/kcms/systemsettings/kcm_ublue.so
