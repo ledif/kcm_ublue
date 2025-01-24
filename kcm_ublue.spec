@@ -1,6 +1,6 @@
 Name:           kcm_ublue
 Version:        0.5.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        KCM for KDE-based Universal Blue images
 
 URL:            https://github.com/ledif/kcm_ublue
@@ -38,7 +38,7 @@ cmake --build build
 
 %install
 install -Dm0755 ./build/bin/plasma/kcms/systemsettings/kcm_ublue.so %{buildroot}%{_libdir}/qt6/plugins/plasma/kcms/systemsettings/kcm_ublue.so
-#install -Dm0755 ./system/usr/share/applications/kcm_ublue.desktop %{buildroot}%{_datadir}/applications/kcm_ublue.desktop
+install -Dm0755 ./system/usr/share/applications/kcm_ublue.desktop %{buildroot}%{_datadir}/applications/kcm_ublue.desktop
 install -Dm0755 ./system/usr/share/polkit-1/actions/org.ublue.rebase.policy %{buildroot}%{_datadir}/polkit-1/actions/org.ublue.rebase.policy
 install -Dm0755 ./system/usr/share/polkit-1/rules.d/21-ublue-rebase.rules %{buildroot}%{_datadir}/polkit-1/rules.d/21-ublue-rebase.rules
 install -Dm0755 ./system/usr/share/polkit-1/rules.d/22-ublue-rebase-systemd.rules %{buildroot}%{_datadir}/polkit-1/rules.d/22-ublue-rebase-systemd.rules
@@ -47,12 +47,12 @@ install -Dm0755 ./system/usr/libexec//ublue-rebase %{buildroot}%{_libexecdir}/li
 
 %files
 %{_libdir}/qt6/plugins/plasma/kcms/systemsettings/kcm_ublue.so
-#%{_datadir}/applications/kcm_ublue.desktop
+%{_datadir}/applications/kcm_ublue.desktop
 %{_datadir}/polkit-1/actions/org.ublue.rebase.policy
 %{_datadir}/polkit-1/rules.d/21-ublue-rebase.rules
 %{_datadir}/polkit-1/rules.d/22-ublue-rebase-systemd.rules
 %{_prefix}/lib/systemd/system/ublue-rebase@.service
-%{_libexecdir}/libexec/ublue-rebase
+%{_libexecdir}/ublue-rebase
 
 %changelog
 %autochangelog
