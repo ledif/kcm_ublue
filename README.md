@@ -4,6 +4,16 @@
 
 ## Installation
 
+### Via layering
+
+```bash
+curl -L https://copr.fedorainfracloud.org/coprs/ledif/kcm_ublue/repo/fedora-41/ledif-kcm_ublue-fedora-41.repo | \
+  sudo tee /etc/yum.repos.d/_copr_ledif_kcm_ublue.repo
+dnf install kcm_ublue
+```
+
+### Via sysext
+
 > [!WARNING] 
 > Installing a sysext with SELinux enabled can lead to an unstable system. Before installing this extension, please first verify that SELinux is set to permissive in `/etc/selinux/config`. If it is set to "enforcing," change it to "permissive" and reboot before continuing.
 
