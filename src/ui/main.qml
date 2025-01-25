@@ -121,10 +121,10 @@ KCMUtils.SimpleKCM {
 
         RowLayout {
             spacing: Kirigami.Units.mediumSpacing
+            Kirigami.FormData.label: i18n("Update stream:")
 
             Controls.RadioButton {
                 id: updateStreamBtn
-                Kirigami.FormData.label: i18n("Update stream:")
                 text: i18n("Stable")
 
                 Controls.ButtonGroup.group: updateStreamGroup

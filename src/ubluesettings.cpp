@@ -97,6 +97,13 @@ bool UBlueSettings::isRebaseInProgress()
 void UBlueSettings::onInfoChanged()
 {
   qDebug() << "onInfoChanged " << variantInfo->asImageNameAndTag();
+
+  // TODO: this could be improved by checking if the rebase is successful but not super important
+  if (this->isRebaseInProgress()) {
+    this->setNeedsSave(true);
+    return;
+  }
+
   bool updatesEqual = currentUpdatesEnabled == updatesEnabled;
   bool imagesEqual = *currentVariantInfo == *variantInfo;
 
