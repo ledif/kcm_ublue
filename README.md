@@ -1,6 +1,6 @@
 # KCM for Universal Blue images
 
-![Screenshot_20250119_222509](https://github.com/user-attachments/assets/1f083300-fb00-428f-9fca-2ae6e51dd32d)
+![Screenshot_20250124_212246](https://github.com/user-attachments/assets/843b5d78-9205-43c5-8074-d9dd02315e9e)
 
 ## Installation
 
