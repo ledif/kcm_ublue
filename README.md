@@ -4,6 +4,8 @@
 
 ## Installation
 
+This is now included in Aurora by default. The following instructions are to install the latest development version.
+
 ### Via layering
 
 ```bash
