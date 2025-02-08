@@ -1,6 +1,9 @@
 #pragma once
 
-#include <KQuickConfigModule>
+#include <QObject>
+#include <QString>
+
+#include <memory>
 
 class HWEFlagSet : public QObject
 {
@@ -46,10 +49,13 @@ public:
   bool operator==(const ImageVariantInfo&) const;
 
   static ImageVariantInfo* loadFromDisk(QObject*);
+  static ImageVariantInfo* parseFromImageNameAndTag(QObject*, const QString&, const QString&);
 
   HWEFlagSet* getHWEFlags();
   void setHWEFlags(HWEFlagSet*);
   UpdateStream getUpdateStream();
+  bool getDevExperience() const;
+  bool isDeprecated() const;
 
   QString asImageNameAndTag() const;
 

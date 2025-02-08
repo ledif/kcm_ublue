@@ -31,3 +31,17 @@ find_package(KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS
 
 add_subdirectory(src)
 
+enable_testing()
+
+find_package(GTest REQUIRED)
+add_executable(test_imagevariant tests/test_imagevariant.cpp src/imagevariant.cpp)
+target_include_directories(test_imagevariant PRIVATE src)
+
+target_link_libraries(test_imagevariant
+    PRIVATE
+    Qt::Core
+    GTest::GTest
+    GTest::Main
+)
+
+add_test(NAME ImageVariantTest COMMAND test_imagevariant)

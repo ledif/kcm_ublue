@@ -1,5 +1,5 @@
 #include "imagevariant.h"
-#include "ubluesettings.h"
+//#include "ubluesettings.h"
 
 #include <QFile>
 #include <QJsonDocument>
@@ -67,15 +67,19 @@ ImageVariantInfo* ImageVariantInfo::loadFromDisk(QObject* parent)
   auto [imageName, imageStream] = getImageNameStream();
   qDebug() << "Image name: " << imageName;
   qDebug() << "Image stream: " << imageStream;
+  return ImageVariantInfo::parseFromImageNameAndTag(parent, imageName, imageStream);
+}
 
+ImageVariantInfo* ImageVariantInfo::parseFromImageNameAndTag(QObject* parent, const QString& imageName, const QString& imageStream)
+{
   // Update stream
-  UpdateStream updateStream;
+  ImageVariantInfo::UpdateStream updateStream;
   if (imageStream == "stable"_L1)
-    updateStream = stableWeekly;
+    updateStream = ImageVariantInfo::stableWeekly;
   else if (imageStream == "stable-daily"_L1)
-    updateStream = stableDaily;
+    updateStream = ImageVariantInfo::stableDaily;
   else if (imageStream == "latest"_L1)
-    updateStream = latest;
+    updateStream = ImageVariantInfo::latest;
 
   HWEFlagSet* hweFlags = new HWEFlagSet{false, false, false};
 
@@ -98,6 +102,7 @@ ImageVariantInfo* ImageVariantInfo::loadFromDisk(QObject* parent)
 
   return new ImageVariantInfo{parent, hweFlags, devExperience, updateStream, isDeprecatedStream};
 }
+
 
 // Create the string representation of this image (e.g., aurora-dx-hwe)
 QString ImageVariantInfo::asImageNameAndTag() const
@@ -124,6 +129,16 @@ QString ImageVariantInfo::asImageNameAndTag() const
     image += "latest"_L1;
 
   return image;
+}
+
+bool ImageVariantInfo::getDevExperience() const
+{
+  return this->devExperience;
+}
+
+bool ImageVariantInfo::isDeprecated() const
+{
+  return this->isDeprecatedStream;
 }
 
 HWEFlagSet* ImageVariantInfo::getHWEFlags()

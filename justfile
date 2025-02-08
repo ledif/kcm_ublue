@@ -30,10 +30,10 @@ _containerized-build:
   #!/bin/bash
   set -xeu
   rm -rf prefix build
-  cd /app
   mkdir prefix
-  cmake -B build -DCMAKE_INSTALL_PREFIX=/app/prefix/usr
+  cmake -B build -DCMAKE_INSTALL_PREFIX=./prefix/usr
   cmake --build build -j8
+  (cd build && ctest --output-on-failure)
   cmake --install build
 
   mkdir prefix/usr/lib64/qt6
