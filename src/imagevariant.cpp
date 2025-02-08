@@ -1,47 +1,57 @@
 #include "imagevariant.h"
-//#include "ubluesettings.h"
 
 #include <QFile>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonParseError>
+#include <QProcess>
 #include <QString>
 
 using namespace Qt::Literals::StringLiterals;
 
-QString kImageInfoJson = "/usr/share/ublue-os/image-info.json"_L1;
+QString getBootedContainerImageReference() {
+    QProcess process;
+    process.start("rpm-ostree"_L1, QStringList() << "status"_L1 << "--json"_L1);
+    process.waitForFinished();
 
-std::pair<QString, QString> getImageNameStream()
-{
-  QFile jsonFile(kImageInfoJson);
+    QByteArray output = process.readAllStandardOutput();
+    if (output.isEmpty()) {
+        qWarning() << "Failed to retrieve rpm-ostree status JSON.";
+        return QString();
+    }
 
-  if (!jsonFile.open(QIODevice::ReadOnly)) {
-    qWarning() << "Couldn't open file " << kImageInfoJson;
-  }
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(output);
+    if (!jsonDoc.isObject()) {
+        qWarning() << "Invalid JSON format.";
+        return QString();
+    }
 
-  QByteArray ba = jsonFile.readAll();
+    QJsonObject rootObj = jsonDoc.object();
+    if (!rootObj.contains("deployments"_L1) || !rootObj["deployments"_L1].isArray()) {
+        qWarning() << "Missing 'deployments' array in JSON.";
+        return QString();
+    }
 
-  QJsonParseError parseError;
+    QJsonArray deployments = rootObj["deployments"_L1].toArray();
+    for (const QJsonValue &deploymentValue : deployments) {
+        if (!deploymentValue.isObject()) continue;
 
-  QJsonDocument jsonDoc = QJsonDocument::fromJson(ba, &parseError);
+        QJsonObject deployment = deploymentValue.toObject();
+        if (deployment.contains("booted"_L1) && deployment["booted"_L1].toBool()) {
+            if (deployment.contains("container-image-reference"_L1)) {
+                return deployment["container-image-reference"_L1].toString();
+            } else {
+                qWarning() << "Booted deployment does not have 'container-image-reference'.";
+                return QString();
+            }
+        }
+    }
 
-  if (parseError.error != QJsonParseError::NoError) {
-    qWarning() << "Parse error at" << parseError.offset << ":" << parseError.errorString();
-  }
-
-  QJsonObject jsonObj;
-  jsonObj = jsonDoc.object();
-
-  QString imageName = jsonObj.value("image-name"_L1).toString();
-
-  return {
-    imageName,
-    // TODO: these fields are different in Aurora vs Bazzite
-    imageName.startsWith("aurora"_L1) ?
-      jsonObj.value("image-tag"_L1).toString() :
-      jsonObj.value("image-branch"_L1).toString()
-  };
+    qWarning() << "No booted deployment found.";
+    return QString();
 }
+
 
 ImageVariantInfo::ImageVariantInfo(QObject* parent, HWEFlagSet* hweFlags, bool devExperience, UpdateStream updateStream, bool isDeprecatedStream)
   : QObject(parent)
@@ -64,14 +74,20 @@ bool ImageVariantInfo::operator==(const ImageVariantInfo& other) const
 
 ImageVariantInfo* ImageVariantInfo::loadFromDisk(QObject* parent)
 {
-  auto [imageName, imageStream] = getImageNameStream();
-  qDebug() << "Image name: " << imageName;
-  qDebug() << "Image stream: " << imageStream;
-  return ImageVariantInfo::parseFromImageNameAndTag(parent, imageName, imageStream);
+  auto imageReference = getBootedContainerImageReference();
+  qDebug() << "Image reference: " << imageReference;
+  return ImageVariantInfo::parseFromImageReference(parent, imageReference);
 }
 
-ImageVariantInfo* ImageVariantInfo::parseFromImageNameAndTag(QObject* parent, const QString& imageName, const QString& imageStream)
+ImageVariantInfo* ImageVariantInfo::parseFromImageReference(QObject* parent, const QString& imageReference)
 {
+  // Example: ostree-image-signed:docker://ghcr.io/ublue-os/aurora-dx:latest -> aurora-dx:latest
+  QString imageRef = imageReference.split("/"_L1).last();
+
+  QStringList parts = imageRef.split(":"_L1);
+  QString imageName = parts.first();
+  QString imageStream = parts.last();
+
   // Update stream
   ImageVariantInfo::UpdateStream updateStream;
   if (imageStream == "stable"_L1)

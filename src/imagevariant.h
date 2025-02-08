@@ -49,7 +49,7 @@ public:
   bool operator==(const ImageVariantInfo&) const;
 
   static ImageVariantInfo* loadFromDisk(QObject*);
-  static ImageVariantInfo* parseFromImageNameAndTag(QObject*, const QString&, const QString&);
+  static ImageVariantInfo* parseFromImageReference(QObject*, const QString&);
 
   HWEFlagSet* getHWEFlags();
   void setHWEFlags(HWEFlagSet*);

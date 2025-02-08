@@ -1,5 +1,5 @@
 Name:           kcm_ublue
-Version:        0.5.2
+Version:        0.5.3
 Release:        1%{?dist}
 Summary:        KCM for KDE-based Universal Blue images
 
@@ -24,6 +24,7 @@ BuildRequires:  qt6-doc-devel
 BuildRequires:  qt6-qtbase-devel
 BuildRequires:  qt6-qtdeclarative-devel
 BuildRequires:  qt6-qttools-devel
+BuildRequires:  gtest-devel
 
 %description
 KDE Configuration Module (KCM) for Aurora.
