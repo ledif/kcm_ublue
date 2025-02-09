@@ -8,9 +8,9 @@
 
 using namespace Qt::Literals::StringLiterals;
 
-QString kUpdateServiceName = "ublue-update.timer"_L1;
+QString kUpdateServiceName = "rpm-ostreed-automatic.timer"_L1;
 
-// Use D-Bus to basically call systemctl status ublue-update.timer
+// Use D-Bus to basically call systemctl status rpm-ostreed-automatic.timer
 // and check that it is enabled
 bool UpdateService::isEnabled()
 {
