@@ -1,6 +1,6 @@
 #pragma once
 
-// Representation of the systemd unit ublue-update.timer
+// Representation of the systemd unit rpm-ostreed-automatic.timer
 class UpdateService
 {
 public:
