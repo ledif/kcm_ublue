@@ -138,6 +138,12 @@ KCMUtils.SimpleKCM {
 
                 model: [ "Weekly", "Daily" ]
                 onActivated: rootLayout.updateStreamChanged(false)
+                Component.onCompleted: {
+                if (kcm.imageVariant.updateStream == 1)
+                  currentIndex = 0
+                else if (kcm.imageVariant.updateStream == 2)
+                  currentIndex = 1
+               }
             }
         }
 
@@ -211,6 +217,12 @@ KCMUtils.SimpleKCM {
               id: nvidiaCombobox
               enabled: nvidiaCheckbox.checked
               model: ["Open", "Closed"]
+              Component.onCompleted: {
+                if (kcm.imageVariant.hweFlags.nvidiaOpen)
+                  currentIndex = 0
+                else if (kcm.imageVariant.hweFlags.nvidia)
+                  currentIndex = 1
+              }
               onActivated: rootLayout.hweChanged()
             }
 
