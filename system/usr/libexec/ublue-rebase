@@ -5,6 +5,14 @@ set -xuo pipefail
 image="ghcr.io/ublue-os/${1}"
 unit="${2}"
 
+cancel-rebase() {
+    echo "Cancelling active transaction..."
+    rpm-ostree cancel
+    exit 1
+}
+
+trap cancel-rebase SIGTERM SIGINT
+
 function send-notification {
     for user in $(w --no-header -u | awk '{print $1}' | grep -v root | sort | uniq); do
         echo "Notifying $user: $1 $2"

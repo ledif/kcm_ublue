@@ -73,20 +73,13 @@ KCMUtils.SimpleKCM {
     }
 
 
-    /*Kirigami.InlineMessage {
-        Layout.fillWidth: true
-        text: "The hardware enablement image can only be on the latest stream. See "
-        type: Kirigami.MessageType.Warning
-        visible: true
-    }*/
-
     Kirigami.FormLayout {
         //anchors.fill: parent
         id: rootLayout
 
-        Item {
-            height: Kirigami.Units.smallSpacing
-        }
+      Item {
+          height: Kirigami.Units.smallSpacing
+      }
 
         Controls.ButtonGroup {
           id: updateStreamGroup
@@ -118,9 +111,19 @@ KCMUtils.SimpleKCM {
           }
           console.log("new updateStream", kcm.imageVariant.updateStream)
         }
+      Item {
+            height: Kirigami.Units.largeSpacing*2
+        }
+      Controls.Label {
+        //  Layout.fillWidth: true
+          horizontalAlignment: Qt.AlignHCenter
+          text: i18n("Rebase Image")
+          font.bold: true
+          font.pointSize: Kirigami.Theme.defaultFont.pointSize + 1
+      }
 
-        RowLayout {
-            spacing: Kirigami.Units.mediumSpacing
+         RowLayout {
+            spacing: Kirigami.Units.smallSpacing
             Kirigami.FormData.label: i18n("Update stream:")
 
             Controls.RadioButton {
@@ -175,62 +178,60 @@ KCMUtils.SimpleKCM {
         signal hweChanged
         onHweChanged: {
           console.log("onHWEChanged")
-          nvidiaCombobox.enabled = nvidiaCheckbox.checked
-
           kcm.imageVariant.hweFlags.hwe = hweCheckbox.checked
           kcm.imageVariant.hweFlags.nvidiaOpen = false
           kcm.imageVariant.hweFlags.nvidia = false
 
-          if (nvidiaCheckbox.checked) {
-            if (nvidiaCombobox.currentValue == "Open")
-              kcm.imageVariant.hweFlags.nvidiaOpen = true
-            else if (nvidiaCombobox.currentValue == "Closed")
-              kcm.imageVariant.hweFlags.nvidia = true
-          }
+          if (nvidiaCombobox.currentIndex == 0)
+            kcm.imageVariant.hweFlags.nvidiaOpen = true
+          else if (nvidiaCombobox.currentIndex == 1)
+            kcm.imageVariant.hweFlags.nvidia = true
 
           console.log("new HWEFlags", kcm.imageVariant.hweFlags.hwe, kcm.imageVariant.hweFlags.nvidia, kcm.imageVariant.hweFlags.nvidiaOpen)
         }
-
-        Controls.CheckBox {
-            id: hweCheckbox
-            Kirigami.FormData.label: i18nc("@option:check", "Hardware enablement:")
-            text: i18nc("@option:check", "Enabled")
-            checked: kcm.imageVariant.hweFlags.hwe
-            onToggled: {
-              rootLayout.hweChanged()
-            }
-        }
-
         RowLayout {
             spacing: Kirigami.Units.mediumSpacing
-
-            Controls.CheckBox {
-              id: nvidiaCheckbox
-              text: i18nc("@option:check", "NVIDIA")
-              checked: kcm.imageVariant.hweFlags.nvidia || kcm.imageVariant.hweFlags.nvidiaOpen
-              onToggled: {
-                rootLayout.hweChanged()
-              }
-            }
+            Kirigami.FormData.label: i18n("GPU driver:")
 
             Controls.ComboBox {
               id: nvidiaCombobox
-              enabled: nvidiaCheckbox.checked
-              model: ["Open", "Closed"]
+              model: ["NVIDIA", "NVIDIA (Legacy)", "Intel / AMD"]
               Component.onCompleted: {
                 if (kcm.imageVariant.hweFlags.nvidiaOpen)
                   currentIndex = 0
                 else if (kcm.imageVariant.hweFlags.nvidia)
                   currentIndex = 1
+                else
+                  currentIndex = 2
               }
               onActivated: rootLayout.hweChanged()
             }
 
             Kirigami.ContextualHelpButton {
-                toolTipText: xi18nc("@info", "Open drivers are for modern NVIDIA GPUs (RTX series and GTX 16xx series+). Closed drivers are for legacy NVIDIA GPUs.")
+                toolTipText: xi18nc("@info", "NVIDIA drivers are for modern NVIDIA GPUs including RTX series and GTX 16xx series+. NVIDIA (Legacy) is for older GPUs.")
             }
         }
 
+        RowLayout {
+            spacing: Kirigami.Units.mediumSpacing
+          Kirigami.FormData.label: i18n("Hardware enablement:")
+
+          Controls.CheckBox {
+              id: hweCheckbox
+              Kirigami.FormData.label: i18nc("@option:check", "Additional hardware support:")
+              text: i18nc("@option:check", "Handheld compatibility")
+              checked: kcm.imageVariant.hweFlags.hwe
+              onToggled: {
+                rootLayout.hweChanged()
+              }
+
+
+
+          }
+           Kirigami.ContextualHelpButton {
+                toolTipText: xi18nc("@info", "Use Bazzite's kernel which includes additional support for hardware from various vendors, including ASUS, Microsoft Surface, Steam Deck and more.")
+            }
+        }
 
         Kirigami.Separator {
             Kirigami.FormData.isSection: true
@@ -239,15 +240,22 @@ KCMUtils.SimpleKCM {
         Item {
             height: Kirigami.Units.smallSpacing
         }
+        RowLayout {
+          Kirigami.FormData.label: i18n("Developer experience:")
 
-        Controls.CheckBox {
+          Controls.CheckBox {
             id: dxCheckbox
             Kirigami.FormData.label: i18nc("@option:check", "Developer experience:")
             text: i18n("Enabled")
             checked: kcm.imageVariant.devExperience
             onToggled: kcm.imageVariant.devExperience = dxCheckbox.checked
+          }
+
+            Kirigami.ContextualHelpButton {
+              toolTipText: xi18nc("@info", "Provides popular developer tooling including Virtual Machine Manager, Docker and VS Code.")
+          }
         }
-    }
+       }
   }
 }
 
