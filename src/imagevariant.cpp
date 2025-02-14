@@ -123,7 +123,7 @@ ImageVariantInfo* ImageVariantInfo::parseFromImageReference(QObject* parent, con
 // Create the string representation of this image (e.g., aurora-dx-hwe)
 QString ImageVariantInfo::asImageNameAndTag() const
 {
-  QString image = "aurora"_L1;
+  QString image = ublue::ProductTraits::imageName();
 
   if (devExperience)
     image += "-dx"_L1;

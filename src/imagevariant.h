@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ublue/product.h>
+
 #include <QObject>
 #include <QString>
 

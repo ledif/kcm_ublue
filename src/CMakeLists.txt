@@ -28,3 +28,4 @@ target_link_libraries(kcm_ublue PRIVATE
     KF6::WidgetsAddons
 )
 
+target_compile_definitions(kcm_ublue PUBLIC -DUBLUE_PRODUCT_AURORA)
