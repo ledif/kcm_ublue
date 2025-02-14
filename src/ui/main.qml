@@ -19,7 +19,7 @@ KCMUtils.SimpleKCM {
   ColumnLayout {
     Kirigami.InlineMessage {
         Layout.fillWidth: true
-        text: "The ASUS and Surface streams have been discontinued. Please migrate to the hardware enablement stream."
+        text: "The ASUS and Surface images are deprecated and their functionality has been in the har. Please migrate to the hardware enablement stream."
         type: Kirigami.MessageType.Warning
         visible: kcm.imageVariant.isDeprecatedStream
     }
@@ -52,7 +52,7 @@ KCMUtils.SimpleKCM {
 
         Connections {
             target: kcm
-            onRebaseServiceChanged: {
+            function onRebaseServiceChanged() {
               console.log("onRebaseServiceChanged", kcm.rebase.status)
               
               if (kcm.rebase.status == 0 || kcm.rebase.status == 1) {
@@ -111,16 +111,11 @@ KCMUtils.SimpleKCM {
           }
           console.log("new updateStream", kcm.imageVariant.updateStream)
         }
-      Item {
-            height: Kirigami.Units.largeSpacing*2
+
+        Item {
+          Kirigami.FormData.label: "Rebase"
+          Kirigami.FormData.isSection: true
         }
-      Controls.Label {
-        //  Layout.fillWidth: true
-          horizontalAlignment: Qt.AlignHCenter
-          text: i18n("Rebase Image")
-          font.bold: true
-          font.pointSize: Kirigami.Theme.defaultFont.pointSize + 1
-      }
 
          RowLayout {
             spacing: Kirigami.Units.smallSpacing
@@ -255,8 +250,115 @@ KCMUtils.SimpleKCM {
               toolTipText: xi18nc("@info", "Provides popular developer tooling including Virtual Machine Manager, Docker and VS Code.")
           }
         }
-       }
-  }
+    }
+    Item {
+        height: Kirigami.Units.largeSpacing
+    }
+    ListView {
+          interactive: true
+          id: deploymentList
+          currentIndex: -1
+
+          Layout.fillWidth: true
+          //Layout.fillHeight: true
+    height: 500  // Temporary debugging value
+          
+
+          model: kcm.deploymentModel
+          /*delegate: Controls.ItemDelegate {
+                text: "foobar"
+                Component.onCompleted: console.log("Delegate created for index:", model.index)
+            }*/
+
+          delegate: Controls.ItemDelegate {
+              id: listItem2
+
+              //width: deploymentList.width
+
+              // There's no need for a list item to ever be selected
+              //down: false
+              //highlighted: false
+              //hoverEnabled: false
+              // ... and because of that, use alternating backgrounds to visually
+              // connect list items' left and right side content elements
+              Kirigami.Theme.useAlternateBackgroundColor: true
+
+              contentItem: RowLayout {
+                  spacing: Kirigami.Units.smallSpacing
+
+                  // The folder's icon
+                  //Kirigami.Icon {
+                  //    source: indexingModel.decoration
+
+                  //    Layout.preferredHeight: Kirigami.Units.iconSizes.smallMedium
+                  //    Layout.preferredWidth: Layout.preferredHeight
+                  //}
+
+                  // The folder's path
+                  Controls.Label {
+                      text: model.imageName
+                      textFormat: Text.PlainText
+                      elide: Text.ElideRight
+
+                    //  Layout.fillWidth: true
+                  }
+
+                // The folder's path
+                  Controls.Label {
+                      text: model.imageTag
+                      textFormat: Text.PlainText
+                      elide: Text.ElideRight
+
+                      Layout.fillWidth: true
+                  }
+
+                  Controls.ToolButton {
+                      enabled: !model.isPinned
+
+                      icon.name: "edit-delete-add"
+
+                      onClicked: kcm.filteredModel.pinDeployment(index)
+
+                      Controls.ToolTip {
+                          text: i18nc("Remove the list item for this filesystem path", "Remove entry")
+                      }
+                  }
+
+                  Controls.ToolButton {
+                      enabled: !model.isDeployed
+
+                      icon.name: "edit-delete-remove"
+
+                      onClicked: kcm.filteredModel.rollbackToDeployment(index)
+
+                      Controls.ToolTip {
+                          text: i18nc("Remove the list item for this filesystem path", "Remove entry")
+                      }
+                  }
+              }
+          }
+      
+
+          header: Kirigami.InlineViewHeader {
+              width: deploymentList.width
+              text: i18nc("@title:table", "Deployments")
+              actions: [
+                  Kirigami.Action {
+                      text: i18nc("@action:button", "Unpin all")
+                      icon.name: "list-add-symbolic"
+                  },
+                  Kirigami.Action {
+                      text: i18nc("@action:button", "Prune")
+                      icon.name: "list-remove-symbolic"
+                  }
+              ]
+          }
+      }
+    }
+
+  Component.onCompleted: {
+    console.log("Model exists:", deploymentList.model !== null);
+}
 }
 
 

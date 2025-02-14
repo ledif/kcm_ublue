@@ -63,6 +63,9 @@ void UBlueSettings::load()
 
   rebaseManager->tryReload();
 
+  deploymentModel.reset(new UBlue::DeploymentModel(this));
+  deploymentModel->updateDeploymentList();
+
   Q_EMIT onResetPressed();
 }
 
@@ -126,6 +129,12 @@ RebaseService* UBlueSettings::getRebaseService()
 {
   return rebaseManager->getCurrentService();
 }
+
+UBlue::DeploymentModel* UBlueSettings::getDeploymentModel()
+{
+  return this->deploymentModel.get();
+}
+
 
 ImageVariantInfo* UBlueSettings::getImageVariant()
 {

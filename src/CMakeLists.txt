@@ -2,6 +2,8 @@
 
 kcmutils_add_qml_kcm(kcm_ublue)
 target_sources(kcm_ublue PRIVATE
+    ublue/deployment_model.h
+    ublue/deployment_model.cpp
     imagevariant.h
     imagevariant.cpp
     rebasemanager.h

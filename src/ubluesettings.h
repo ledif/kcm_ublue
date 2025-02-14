@@ -2,6 +2,7 @@
 
 #include "imagevariant.h"
 #include "rebasemanager.h"
+#include "ublue/deployment_model.h"
 
 #include <KQuickConfigModule>
 #include <QProcess>
@@ -13,6 +14,7 @@ class UBlueSettings : public KQuickConfigModule
   Q_PROPERTY(ImageVariantInfo* imageVariant READ getImageVariant WRITE setImageVariant NOTIFY infoChanged)
   Q_PROPERTY(RebaseService* rebase READ getRebaseService CONSTANT)
   Q_PROPERTY(bool rebaseInProgress READ isRebaseInProgress CONSTANT)
+  Q_PROPERTY(UBlue::DeploymentModel* deploymentModel READ getDeploymentModel CONSTANT)
 
 public:
   UBlueSettings(QObject *parent, const KPluginMetaData &data);
@@ -21,6 +23,7 @@ public:
   void setImageVariant(ImageVariantInfo*);
 
   RebaseService* getRebaseService();
+  UBlue::DeploymentModel* getDeploymentModel();
   bool isRebaseInProgress();
 
   Q_INVOKABLE void onRebaseCancelButtonPressed();
@@ -51,5 +54,6 @@ private:
 
   std::unique_ptr<RebaseManager> rebaseManager;
   std::unique_ptr<QProcess> rebaseDetailsProcess;
+  std::unique_ptr<UBlue::DeploymentModel> deploymentModel;
 };
 
