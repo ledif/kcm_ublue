@@ -1,6 +1,6 @@
 build:
-  podman build -t kcm_ublue_dev .
-  podman run -it --volume $PWD:/app:Z -w /app kcm_ublue_dev just _containerized-build
+  podman build -t kcm_ublue-build .
+  podman run -it --volume $PWD:/app:Z -w /app --name kcm_ublue --rm kcm_ublue-build just _containerized-build
 
 run:
   #!/bin/bash
@@ -75,7 +75,7 @@ create-ublue-packages-pr version:
     exit 1
   fi
 
-  notes=$(gh release view v0.5.7 --json body --template '{{.body}}')
+  notes=$(gh release view v{{ version }} --json body --template '{{{{.body}}}}')
   tmpdir=$(mktemp -d --tmpdir=/tmp kcm_ublue.XXXXX)
   cd $tmpdir
   gh repo clone ublue-os-packages
