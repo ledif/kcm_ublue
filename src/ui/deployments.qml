@@ -49,8 +49,9 @@ Item {
                 }
 
                 Controls.ToolButton {
+                    enabled: model.isPinnable
                     icon.name: model.isPinned ? "window-unpin" : "window-pin"
-                    onClicked: kcm.filteredModel.pinOrUnpinDeployment(index)
+                    onClicked: kcm.deploymentModel.pinOrUnpinDeployment(index)
 
                     Controls.ToolTip {
                         text: i18nc("Pin deployment in rpm-ostree", (model.isPinned ? "Unpin" : "Pin") + " deployment")
@@ -60,7 +61,7 @@ Item {
                 Controls.ToolButton {
                     enabled: model.isRollbackTarget
                     icon.name: "view-refresh"
-                    onClicked: kcm.filteredModel.rollbackToDeployment(index)
+                    onClicked: kcm.deploymentModel.rollbackToDeployment(index)
 
                     Controls.ToolTip {
                         text: i18nc("Remove the list item for this filesystem path", "Rollback to deployment")

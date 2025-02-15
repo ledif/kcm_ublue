@@ -19,6 +19,8 @@ DeploymentModel::DeploymentModel(QObject*)
     roles[isPinned] = "isPinned";
     roles[isDeployed] = "isDeployed";
     roles[isRollbackTarget] = "isRollbackTarget";
+    roles[isPinnable] = "isPinnable";
+
 }
 
 void DeploymentModel::updateDeploymentList()
@@ -76,6 +78,30 @@ void DeploymentModel::updateDeploymentList()
 }
 
 
+void DeploymentModel::pinOrUnpinDeployment(int index)
+{
+    qDebug() << "Pin or unpin " << index;
+
+    QStringList arguments;
+    arguments << "ostree"_L1 << "admin"_L1 << "pin"_L1; 
+    if (deployments[index].isPinned)
+        arguments << "-u"_L1;
+    arguments<< QString::number(index);
+
+    QProcess process;
+
+    // Start the process with the appropriate command
+    process.start("pkexec"_L1, arguments);
+
+    // Wait for the process to finish
+    if (!process.waitForFinished()) {
+        qWarning() << "Process failed:" << process.errorString();
+        return;
+    }
+
+    this->updateDeploymentList();
+}
+
 int DeploymentModel::rowCount(const QModelIndex &parent = QModelIndex()) const
 {
     Q_UNUSED(parent);
@@ -108,6 +134,9 @@ QVariant DeploymentModel::data(const QModelIndex &index, int role) const
         case isRollbackTarget:
             // We can rollback to any deployments after the booted deployment
             return index.row() > bootedIdx;
+        case isPinnable:
+            // Can pin anything if nothing is staged, otherwise pin booted or older
+            return index.row() >= bootedIdx;
         default:
             return QVariant();
     }

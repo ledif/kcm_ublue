@@ -16,7 +16,8 @@ public:
         version,
         isPinned,
         isDeployed,
-        isRollbackTarget
+        isRollbackTarget,
+        isPinnable
     };
 
     Q_ENUM(Roles)
@@ -26,7 +27,7 @@ public:
     int rowCount(const QModelIndex &parent) const override;
 
     //Q_INVOKABLE void addFolder(const QString &folder, const bool included);
-    //Q_INVOKABLE void removeFolder(int row);
+    Q_INVOKABLE void pinOrUnpinDeployment(int index);
     QHash<int, QByteArray> roleNames() const override;
 
 public Q_SLOTS:
