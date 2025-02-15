@@ -16,8 +16,11 @@ DeploymentModel::DeploymentModel(QObject*)
 void DeploymentModel::updateDeploymentList()
 {
     beginResetModel();
-    deployments.append(DeploymentInfo{"aurora-dx"_L1, "stable"_L1, "41.20250214.1"_L1, false, true});
-    deployments.append(DeploymentInfo{"aurora-dx"_L1, "stable-daily"_L1, "41.20250213.1"_L1, false, true});
+
+    deployments.append(DeploymentInfo{"aurora-dx"_L1, "latest"_L1, "41.20250214.1"_L1, false, true});
+    deployments.append(DeploymentInfo{"aurora-dx"_L1, "stable-daily"_L1, "41.20250213.1"_L1, false, false});
+    deployments.append(DeploymentInfo{"aurora-dx"_L1, "stable-daily"_L1, "41.20250212.1"_L1, true, false});
+
     endResetModel();
 }
 
@@ -46,7 +49,7 @@ QVariant DeploymentModel::data(const QModelIndex &index, int role) const
         case isPinned:
             return deployment.isPinned;
         case isDeployed:
-            return deployment.isPinned;
+            return deployment.isDeployed;
         default:
             return QVariant();
     }
