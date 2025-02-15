@@ -1,5 +1,12 @@
 #include "ublue/deployment_model.h"
 
+
+#include <QProcess>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QDebug>
+
 using namespace Qt::Literals::StringLiterals;
 
 namespace UBlue {
@@ -11,15 +18,59 @@ DeploymentModel::DeploymentModel(QObject*)
     roles[version] = "version";
     roles[isPinned] = "isPinned";
     roles[isDeployed] = "isDeployed";
+    roles[isRollbackTarget] = "isRollbackTarget";
 }
 
 void DeploymentModel::updateDeploymentList()
 {
     beginResetModel();
 
-    deployments.append(DeploymentInfo{"aurora-dx"_L1, "latest"_L1, "41.20250214.1"_L1, false, true});
-    deployments.append(DeploymentInfo{"aurora-dx"_L1, "stable-daily"_L1, "41.20250213.1"_L1, false, false});
-    deployments.append(DeploymentInfo{"aurora-dx"_L1, "stable-daily"_L1, "41.20250212.1"_L1, true, false});
+    QProcess process;
+    process.start("rpm-ostree"_L1, QStringList() << "status"_L1 << "--json"_L1);
+
+    // Wait for the process to finish
+    process.waitForFinished();
+
+    // Get the output of the process
+    QByteArray output = process.readAllStandardOutput();
+
+    // Parse the JSON data
+    QJsonDocument doc = QJsonDocument::fromJson(output);
+    if (doc.isNull() || !doc.isObject()) {
+        qWarning() << "Failed to parse JSON from rpm-ostree status --json.";
+        return;
+    }
+
+    QJsonObject jsonObject = doc.object();
+
+    if (jsonObject.contains("deployments"_L1) && jsonObject["deployments"_L1].isArray())
+    {
+        QJsonArray deploymentsArr = jsonObject["deployments"_L1].toArray();
+
+        for (const QJsonValue &deploymentValue : deploymentsArr)
+        {
+            if (deploymentValue.isObject())
+            {
+                QJsonObject deploymentObject = deploymentValue.toObject();
+
+                bool pinned = deploymentObject.contains("pinned"_L1) ? deploymentObject["pinned"_L1].toBool() : false;
+                bool booted = deploymentObject.contains("booted"_L1) ? deploymentObject["booted"_L1].toBool() : false;
+                QString imageVersion = deploymentObject["version"_L1].toString();
+
+                QString fullImageRef = deploymentObject["container-image-reference"_L1].toString();
+                QString imageRef = fullImageRef.split("/"_L1).last();
+
+                QStringList parts = imageRef.split(":"_L1);
+                QString imageName = parts.first();
+                QString imageStream = parts.last();
+
+                deployments.append(DeploymentInfo{imageName, imageStream, imageVersion, pinned, booted});
+
+            }
+        }
+    } else {
+        qWarning() << "'deployments' array not found in JSON output.";
+    }
 
     endResetModel();
 }
@@ -38,6 +89,10 @@ QVariant DeploymentModel::data(const QModelIndex &index, int role) const
     if (!index.isValid() || index.row() >= deployments.size())
         return QVariant();
 
+    auto bootedIdx = std::distance(deployments.begin(), std::find_if(deployments.begin(), deployments.end(), [](const DeploymentInfo& info) {
+        return info.isDeployed;
+    }));
+
     auto deployment = deployments.at(index.row());
     switch (role) {
         case imageName:
@@ -50,6 +105,9 @@ QVariant DeploymentModel::data(const QModelIndex &index, int role) const
             return deployment.isPinned;
         case isDeployed:
             return deployment.isDeployed;
+        case isRollbackTarget:
+            // We can rollback to any deployments after the booted deployment
+            return index.row() > bootedIdx;
         default:
             return QVariant();
     }

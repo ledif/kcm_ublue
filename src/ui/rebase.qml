@@ -6,14 +6,17 @@ import org.kde.kirigami as Kirigami
 
 Item {
     Layout.fillWidth: true
+    anchors.horizontalCenter: parent.horizontalCenter
     ColumnLayout {
-        //anchors.fill: parent  // Ensure the column layout fills the parent
-        anchors.horizontalCenter: parent.horizontalCenter  // Center horizontally
+        Layout.fillWidth: true
+        anchors.fill: parent
+
         Kirigami.InlineMessage {
             Layout.fillWidth: true
             text: "The ASUS and Surface images are deprecated and their functionality has been in the har. Please migrate to the hardware enablement stream."
             type: Kirigami.MessageType.Warning
             visible: kcm.imageVariant.isDeprecatedStream
+
         }
 
         Kirigami.InlineMessage {
@@ -64,6 +67,8 @@ Item {
         }
 
         Kirigami.FormLayout {
+            //anchors.horizontalCenter: parent.horizontalCenter
+            Layout.fillHeight: true
             //anchors.fill: parent
             id: rootLayout
 

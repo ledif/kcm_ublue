@@ -15,7 +15,8 @@ public:
         imageTag,
         version,
         isPinned,
-        isDeployed
+        isDeployed,
+        isRollbackTarget
     };
 
     Q_ENUM(Roles)

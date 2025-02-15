@@ -6,12 +6,15 @@ import org.kde.kirigami as Kirigami
 import org.kde.kcmutils as KCMUtils
 
 KCMUtils.SimpleKCM {
+    Layout.fillWidth: true
+
     ColumnLayout {
         anchors.fill: parent
+        Layout.fillWidth: true
 
         RowLayout {
             Layout.fillWidth: true
-            
+
             Controls.TabBar {
                 id: tabBar
                 Layout.fillWidth: true
@@ -30,13 +33,16 @@ KCMUtils.SimpleKCM {
         StackLayout {
             Layout.fillWidth: true
             currentIndex: tabBar.currentIndex
-            anchors.horizontalCenter: parent.horizontalCenter
+            //anchors.fill: parent
 
             Item {
-                anchors.centerIn: parent
+                //anchors.fill: parent
+                Layout.fillWidth: true
+
                 Loader {
-                    
                     anchors.fill: parent
+                    Layout.fillWidth: true
+
                     id: rebaseTab
                     source: "rebase.qml"
                 }
@@ -45,7 +51,9 @@ KCMUtils.SimpleKCM {
             Item {
                 Layout.fillWidth: true
                 Loader {
+                    anchors.fill: parent
                     Layout.fillWidth: true
+
                     id: deploymentsTab
                     source: "deployments.qml"
                 }

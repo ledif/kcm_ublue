@@ -5,6 +5,8 @@ import org.kde.kirigami as Kirigami
 
 Item {
     Layout.fillWidth: true
+    anchors.fill: parent
+
     ListView {
         id: deploymentList
         interactive: true
@@ -15,26 +17,17 @@ Item {
 
         model: kcm.deploymentModel
 
-
         delegate: Controls.ItemDelegate {
             id: listItem2
 
-            //width: deploymentList.width
-
-            // There's no need for a list item to ever be selected
-            //down: false
-            //highlighted: false
-            //hoverEnabled: false
-            // ... and because of that, use alternating backgrounds to visually
-            // connect list items' left and right side content elements
             Kirigami.Theme.useAlternateBackgroundColor: true
 
             contentItem: RowLayout {
                 spacing: Kirigami.Units.smallSpacing
+                Layout.fillWidth: true // Ensure RowLayout takes full width
 
                 Kirigami.Icon {
                     source: model.isDeployed ? "draw-circle" : ""
-
                     Layout.preferredHeight: Kirigami.Units.iconSizes.smallMedium
                 }
 
@@ -46,20 +39,17 @@ Item {
                 Controls.Label {
                     text: model.imageTag
                     textFormat: Text.PlainText
-
-                    Layout.fillWidth: true
+                    Layout.fillWidth: true  // Make this label fill the available width
                 }
 
                 Controls.Label {
                     text: model.version
                     textFormat: Text.PlainText
-
-                    Layout.fillWidth: true
+                    Layout.fillWidth: true  // Make this label fill the available width
                 }
 
                 Controls.ToolButton {
                     icon.name: model.isPinned ? "window-unpin" : "window-pin"
-
                     onClicked: kcm.filteredModel.pinOrUnpinDeployment(index)
 
                     Controls.ToolTip {
@@ -68,10 +58,8 @@ Item {
                 }
 
                 Controls.ToolButton {
-                    enabled: !model.isDeployed
-
+                    enabled: model.isRollbackTarget
                     icon.name: "view-refresh"
-
                     onClicked: kcm.filteredModel.rollbackToDeployment(index)
 
                     Controls.ToolTip {
