@@ -26,6 +26,7 @@ DeploymentModel::DeploymentModel(QObject*)
 void DeploymentModel::updateDeploymentList()
 {
     beginResetModel();
+    deployments.clear();
 
     QProcess process;
     process.start("rpm-ostree"_L1, QStringList() << "status"_L1 << "--json"_L1);
@@ -57,7 +58,10 @@ void DeploymentModel::updateDeploymentList()
 
                 bool pinned = deploymentObject.contains("pinned"_L1) ? deploymentObject["pinned"_L1].toBool() : false;
                 bool booted = deploymentObject.contains("booted"_L1) ? deploymentObject["booted"_L1].toBool() : false;
+                bool staged = deploymentObject.contains("staged"_L1) ? deploymentObject["staged"_L1].toBool() : false;
+
                 QString imageVersion = deploymentObject["version"_L1].toString();
+                QString commit = deploymentObject["checksum"_L1].toString();
 
                 QString fullImageRef = deploymentObject["container-image-reference"_L1].toString();
                 QString imageRef = fullImageRef.split("/"_L1).last();
@@ -66,7 +70,7 @@ void DeploymentModel::updateDeploymentList()
                 QString imageName = parts.first();
                 QString imageStream = parts.last();
 
-                deployments.append(DeploymentInfo{imageName, imageStream, imageVersion, pinned, booted});
+                deployments.append(DeploymentInfo{imageName, imageStream, imageVersion, commit, pinned, booted, staged});
 
             }
         }

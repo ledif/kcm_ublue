@@ -38,8 +38,10 @@ private:
         QString imageName;
         QString imageTag;
         QString version;
+        QString commit;
         bool isPinned;
         bool isDeployed;
+        bool isStaged;
     };
 
     QList<DeploymentInfo> deployments;
