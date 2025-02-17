@@ -48,7 +48,7 @@ _containerized-build:
 qmlformat:
   #!/bin/bash
   podman run -it --volume $PWD:/app:Z -w /app --name kcm_ublue --rm --env LANG=en_US.UTF-8 kcm_ublue-build \
-    qmlformat-qt6 -i ./src/ui/*.qml
+    qmlformat-qt6 -V -i ./src/ui/*.qml
 
 
 release-new-version version:
