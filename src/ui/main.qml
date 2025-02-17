@@ -6,7 +6,7 @@ import org.kde.kirigami as Kirigami
 import org.kde.kcmutils as KCMUtils
 
 KCMUtils.SimpleKCM {
-    Layout.fillWidth: true
+            Layout.fillWidth: true
 
     ColumnLayout {
         anchors.fill: parent
