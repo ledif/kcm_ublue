@@ -40,10 +40,9 @@ KCMUtils.SimpleKCM {
                 Layout.fillWidth: true
 
                 Loader {
+                    id: rebaseTab
                     anchors.fill: parent
                     Layout.fillWidth: true
-
-                    id: rebaseTab
                     source: "rebase.qml"
                 }
             }
@@ -51,10 +50,9 @@ KCMUtils.SimpleKCM {
             Item {
                 Layout.fillWidth: true
                 Loader {
+                    id: deploymentsTab
                     anchors.fill: parent
                     Layout.fillWidth: true
-
-                    id: deploymentsTab
                     source: "deployments.qml"
                 }
             }

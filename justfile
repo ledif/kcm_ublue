@@ -45,9 +45,9 @@ _containerized-build:
   mkfs.erofs -zlz4 kcm_ublue.raw prefix
 
 # Development and Release
-format-qml:
+qmlformat:
   #!/bin/bash
-  podman run -it --volume $PWD:/app:Z -w /app --name kcm_ublue --rm kcm_ublue-build qmlformat-qt6 -i /app/src/ui/main.qml 
+  podman run -it --volume $PWD:/app:Z -w /app --name kcm_ublue --rm kcm_ublue-build qmlformat-qt6 -i ./src/ui/*.qml
 
 
 release-new-version version:

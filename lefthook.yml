@@ -1,0 +1,5 @@
+pre-commit:
+  commands:
+    qmlformat:
+      glob: "*.qml"
+      run: just qmlformat

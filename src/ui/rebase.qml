@@ -8,7 +8,7 @@ Item {
     Layout.fillWidth: true
     anchors.horizontalCenter: parent.horizontalCenter
     ColumnLayout {
-          Layout.fillWidth: true
+        Layout.fillWidth: true
         anchors.fill: parent
 
         Kirigami.InlineMessage {
@@ -16,7 +16,6 @@ Item {
             text: "The ASUS and Surface images are deprecated and their functionality has been in the har. Please migrate to the hardware enablement stream."
             type: Kirigami.MessageType.Warning
             visible: kcm.imageVariant.isDeprecatedStream
-
         }
 
         Kirigami.InlineMessage {
@@ -67,10 +66,10 @@ Item {
         }
 
         Kirigami.FormLayout {
-            //anchors.horizontalCenter: parent.horizontalCenter
-            Layout.fillHeight: true
             //anchors.fill: parent
             id: rootLayout
+            //anchors.horizontalCenter: parent.horizontalCenter
+            Layout.fillHeight: true
 
             Item {
                 height: Kirigami.Units.smallSpacing
@@ -243,4 +242,3 @@ Item {
         }
     }
 }
-
