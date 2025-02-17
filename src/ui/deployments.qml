@@ -71,7 +71,9 @@ Item {
         }
 
         header: Kirigami.InlineViewHeader {
-            width: deploymentList.width
+            //width: deploymentList.width
+            Layout.fillWidth: true
+
             text: i18nc("@title:table", "Deployments")
             actions: [
                 Kirigami.Action {

@@ -8,7 +8,7 @@ Item {
     Layout.fillWidth: true
     anchors.horizontalCenter: parent.horizontalCenter
     ColumnLayout {
-        Layout.fillWidth: true
+          Layout.fillWidth: true
         anchors.fill: parent
 
         Kirigami.InlineMessage {
