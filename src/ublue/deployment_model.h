@@ -30,7 +30,6 @@ public:
     Q_INVOKABLE void pinOrUnpinDeployment(int index);
     QHash<int, QByteArray> roleNames() const override;
 
-public Q_SLOTS:
     void updateDeploymentList();
 
 private:

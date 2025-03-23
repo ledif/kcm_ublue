@@ -26,6 +26,7 @@ DeploymentModel::DeploymentModel(QObject*)
 void DeploymentModel::updateDeploymentList()
 {
     beginResetModel();
+    qDebug() << "getting deployments";
     deployments.clear();
 
     QProcess process;
@@ -77,7 +78,7 @@ void DeploymentModel::updateDeploymentList()
     } else {
         qWarning() << "'deployments' array not found in JSON output.";
     }
-
+    qDebug() << "endResetModel";
     endResetModel();
 }
 
