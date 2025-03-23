@@ -45,8 +45,6 @@ KCMUtils.SimpleKCM {
                     Layout.fillWidth: true
                     source: "rebase.qml"
                 }
-
-
             }
 
             Item {

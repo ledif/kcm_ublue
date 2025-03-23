@@ -3,16 +3,14 @@ import QtQuick.Layouts
 import QtQuick.Controls as Controls
 import org.kde.kirigami as Kirigami
 
-
-
 Item {
+    id: deploymentViewItem
     Layout.fillWidth: true
     anchors.fill: parent
-    id: deploymentViewItem
 
     ListView {
-        anchors.right:  deploymentViewItem.right
         id: deploymentList
+        anchors.right: deploymentViewItem.right
         currentIndex: -1
 
         Layout.fillWidth: true
@@ -55,9 +53,9 @@ Item {
                     enabled: model.isPinnable
                     icon.name: model.isPinned ? "window-unpin" : "window-pin"
                     onClicked: {
-                        kcm.deploymentModel.pinOrUnpinDeployment(index)
+                        kcm.deploymentModel.pinOrUnpinDeployment(index);
                         //deploymentList.model = null;
-                        //deploymentList.model = kcm.deploymentModel;  // Force refresh                    
+                        //deploymentList.model = kcm.deploymentModel;  // Force refresh
                     }
 
                     Controls.ToolTip {
