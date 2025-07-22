@@ -7,25 +7,6 @@ run:
   export QT_LOGGING_RULES="*.debug=true; qt.*.debug=false"
   systemsettings kcm_ublue
 
-install:
-  #!/bin/bash
-  set -xeu
-
-  if getenforce | grep -q Enforcing; then
-    echo "SELinux and systemd-sysext don't play well here. Set SELInux to permissive first."
-    exit 1
-  fi
-
-  sudo install -d -m 0755 -o 0 -g 0 /run/extensions/
-  sudo restorecon -RFv /run/extensions/
-  sudo install -m 644 -o 0 -g 0 kcm_ublue.raw /run/extensions/kcm_ublue.raw
-  rm kcm_ublue.raw
-  sudo systemctl restart systemd-sysext.service
-  systemd-sysext status
-  sudo systemctl daemon-reload
-  sudo rm -f /run/ublue-rebase
-  #sudo systemctl restart polkit
-
 _containerized-build:
   #!/bin/bash
   set -xeu
@@ -41,8 +22,6 @@ _containerized-build:
 
   cp -r system/usr/* prefix/usr
 
-  rm -f kcm_ublue.raw
-  mkfs.erofs -zlz4 kcm_ublue.raw prefix
 
 release-new-version version:
   #!/bin/bash

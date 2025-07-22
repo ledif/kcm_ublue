@@ -87,7 +87,7 @@ KCMUtils.SimpleKCM {
 
         Controls.CheckBox {
           id: updatesCheckBox
-          Kirigami.FormData.label: i18nc("@option:check", "System updates:")
+          Kirigami.FormData.label: i18nc("@option:check", "Automatic updates:")
           text: i18n("Enabled")
           checked: kcm.updatesEnabled
           onToggled: kcm.updatesEnabled = updatesCheckBox.checked
