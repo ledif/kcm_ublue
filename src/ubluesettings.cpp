@@ -64,7 +64,7 @@ void UBlueSettings::load()
   rebaseManager->tryReload();
 
   deploymentModel.reset(new UBlue::DeploymentModel(this));
-  deploymentModel->updateDeploymentList();
+  // Don't update here - let QML trigger the update after it's ready
 
   Q_EMIT onResetPressed();
 }

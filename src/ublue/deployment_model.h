@@ -7,6 +7,7 @@ namespace UBlue {
 class DeploymentModel : public QAbstractListModel
 {
     Q_OBJECT
+    
 public:
     explicit DeploymentModel(QObject *parent);
 
@@ -28,9 +29,12 @@ public:
 
     //Q_INVOKABLE void addFolder(const QString &folder, const bool included);
     Q_INVOKABLE void pinOrUnpinDeployment(int index);
+    Q_INVOKABLE void rollbackToDeployment(int index);
+    Q_INVOKABLE void updateDeploymentList();
     QHash<int, QByteArray> roleNames() const override;
 
-    void updateDeploymentList();
+Q_SIGNALS:
+    void deploymentListUpdated();
 
 private:
     struct DeploymentInfo {

@@ -1,4 +1,4 @@
-FROM ghcr.io/ublue-os/fedora-toolbox:latest
+FROM fedora:42
 RUN dnf install -y \
   clang-format \
   cmake \

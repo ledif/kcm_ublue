@@ -21,13 +21,17 @@ DeploymentModel::DeploymentModel(QObject*)
     roles[isRollbackTarget] = "isRollbackTarget";
     roles[isPinnable] = "isPinnable";
 
+    qDebug() << "DeploymentModel created";
 }
 
 void DeploymentModel::updateDeploymentList()
 {
+    qDebug() << "updateDeploymentList: clearing existing deployments, count was:" << deployments.size();
+    
     beginResetModel();
-    qDebug() << "getting deployments";
     deployments.clear();
+    
+    qDebug() << "getting deployments";
 
     QProcess process;
     process.start("rpm-ostree"_L1, QStringList() << "status"_L1 << "--json"_L1);
@@ -37,11 +41,20 @@ void DeploymentModel::updateDeploymentList()
 
     // Get the output of the process
     QByteArray output = process.readAllStandardOutput();
+    qDebug() << "rpm-ostree output size:" << output.size();
+
+    if (output.isEmpty()) {
+        qWarning() << "No output from rpm-ostree status --json";
+        endResetModel();
+        return;
+    }
 
     // Parse the JSON data
     QJsonDocument doc = QJsonDocument::fromJson(output);
     if (doc.isNull() || !doc.isObject()) {
         qWarning() << "Failed to parse JSON from rpm-ostree status --json.";
+        qDebug() << "Raw output:" << output;
+        endResetModel();
         return;
     }
 
@@ -50,6 +63,7 @@ void DeploymentModel::updateDeploymentList()
     if (jsonObject.contains("deployments"_L1) && jsonObject["deployments"_L1].isArray())
     {
         QJsonArray deploymentsArr = jsonObject["deployments"_L1].toArray();
+        qDebug() << "Found" << deploymentsArr.size() << "deployments";
 
         for (const QJsonValue &deploymentValue : deploymentsArr)
         {
@@ -65,11 +79,26 @@ void DeploymentModel::updateDeploymentList()
                 QString commit = deploymentObject["checksum"_L1].toString();
 
                 QString fullImageRef = deploymentObject["container-image-reference"_L1].toString();
+                qDebug() << "Full image ref:" << fullImageRef;
+                
+                if (fullImageRef.isEmpty()) {
+                    qWarning() << "Empty container-image-reference, skipping deployment";
+                    continue;
+                }
+                
                 QString imageRef = fullImageRef.split("/"_L1).last();
+                qDebug() << "Image ref:" << imageRef;
 
                 QStringList parts = imageRef.split(":"_L1);
+                if (parts.size() < 2) {
+                    qWarning() << "Invalid image reference format:" << imageRef;
+                    continue;
+                }
+                
                 QString imageName = parts.first();
                 QString imageStream = parts.last();
+                
+                qDebug() << "Adding deployment:" << imageName << imageStream << imageVersion << "pinned:" << pinned << "booted:" << booted;
 
                 deployments.append(DeploymentInfo{imageName, imageStream, imageVersion, commit, pinned, booted, staged});
 
@@ -78,8 +107,12 @@ void DeploymentModel::updateDeploymentList()
     } else {
         qWarning() << "'deployments' array not found in JSON output.";
     }
-    qDebug() << "endResetModel";
+    
+    qDebug() << "Final deployment count:" << deployments.size();
     endResetModel();
+    
+    Q_EMIT deploymentListUpdated();
+    qDebug() << "updateDeploymentList: deploymentListUpdated() signal emitted";
 }
 
 
@@ -101,6 +134,29 @@ void DeploymentModel::pinOrUnpinDeployment(int index)
     // Wait for the process to finish
     if (!process.waitForFinished()) {
         qWarning() << "Process failed:" << process.errorString();
+        return;
+    }
+
+    this->updateDeploymentList();
+}
+
+void DeploymentModel::rollbackToDeployment(int index)
+{
+    qDebug() << "Rollback to deployment " << index;
+
+    if (index < 0 || index >= deployments.size()) {
+        qWarning() << "Invalid deployment index for rollback:" << index;
+        return;
+    }
+
+    QStringList arguments;
+    arguments << "rpm-ostree"_L1 << "rollback"_L1;
+
+    QProcess process;
+    process.start("pkexec"_L1, arguments);
+
+    if (!process.waitForFinished()) {
+        qWarning() << "Rollback process failed:" << process.errorString();
         return;
     }
 

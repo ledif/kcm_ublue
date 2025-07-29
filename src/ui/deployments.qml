@@ -8,18 +8,72 @@ Item {
     Layout.fillWidth: true
     anchors.fill: parent
 
+    Component.onCompleted: {
+        console.log("Deployments view loaded, model count:", kcm.deploymentModel.rowCount())
+        // Use a timer to ensure the view is fully set up before updating
+        updateTimer.start()
+    }
+
+    Timer {
+        id: updateTimer
+        interval: 100
+        repeat: false
+        onTriggered: {
+            console.log("Timer triggered, updating deployment list")
+            kcm.deploymentModel.updateDeploymentList()
+            console.log("After timer update, model count:", kcm.deploymentModel.rowCount())
+            
+            // Try a more aggressive refresh
+            Qt.callLater(function() {
+                console.log("CallLater: forcing model refresh")
+                deploymentList.model = null
+                deploymentList.model = kcm.deploymentModel
+                console.log("CallLater: model reassigned, count should be:", kcm.deploymentModel.rowCount())
+            })
+        }
+    }
+
+    Connections {
+        target: kcm.deploymentModel
+        function onModelReset() {
+            console.log("Model reset signal received, count:", kcm.deploymentModel.rowCount())
+        }
+        function onDeploymentListUpdated() {
+            console.log("Deployment list updated signal received, count:", kcm.deploymentModel.rowCount())
+            // Force ListView to refresh by reassigning the model
+            deploymentList.model = null
+            deploymentList.model = kcm.deploymentModel
+        }
+    }
+
     ListView {
         id: deploymentList
-        anchors.right: deploymentViewItem.right
+        anchors.fill: parent
         currentIndex: -1
-
-        Layout.fillWidth: true
-        height: 500  // Temporary debugging value
 
         model: kcm.deploymentModel
 
+        Component.onCompleted: {
+            console.log("ListView created, model count:", count)
+        }
+
+        onCountChanged: {
+            console.log("ListView count changed to:", count)
+            console.log("Model row count:", kcm.deploymentModel.rowCount())
+        }
+
+        onModelChanged: {
+            console.log("ListView model changed, new count:", count)
+        }
+
         delegate: Controls.ItemDelegate {
             id: listItem2
+            
+            width: deploymentList.width
+
+            Component.onCompleted: {
+                console.log("Delegate created for index:", index, "imageName:", model.imageName)
+            }
 
             Kirigami.Theme.useAlternateBackgroundColor: true
 
@@ -54,8 +108,6 @@ Item {
                     icon.name: model.isPinned ? "window-unpin" : "window-pin"
                     onClicked: {
                         kcm.deploymentModel.pinOrUnpinDeployment(index);
-                        //deploymentList.model = null;
-                        //deploymentList.model = kcm.deploymentModel;  // Force refresh
                     }
 
                     Controls.ToolTip {
@@ -76,8 +128,7 @@ Item {
         }
 
         header: Kirigami.InlineViewHeader {
-            //width: deploymentList.width
-            Layout.fillWidth: true
+            width: deploymentList.width
 
             text: i18nc("@title:table", "Deployments")
             actions: [
@@ -87,5 +138,13 @@ Item {
                 }
             ]
         }
+    }
+
+    // Show a message when there are no deployments
+    Controls.Label {
+        anchors.centerIn: parent
+        text: "No deployments found"
+        visible: deploymentList.count === 0
+        color: Kirigami.Theme.disabledTextColor
     }
 }
