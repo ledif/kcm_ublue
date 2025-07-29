@@ -17,6 +17,7 @@ public:
         version,
         isPinned,
         isDeployed,
+        isStaged,
         isRollbackTarget,
         isPinnable
     };

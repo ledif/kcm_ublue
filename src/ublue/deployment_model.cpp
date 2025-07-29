@@ -18,6 +18,7 @@ DeploymentModel::DeploymentModel(QObject*)
     roles[version] = "version";
     roles[isPinned] = "isPinned";
     roles[isDeployed] = "isDeployed";
+    roles[isStaged] = "isStaged";
     roles[isRollbackTarget] = "isRollbackTarget";
     roles[isPinnable] = "isPinnable";
 
@@ -149,14 +150,18 @@ void DeploymentModel::rollbackToDeployment(int index)
         return;
     }
 
+    // Get the commit hash for the specific deployment
+    QString commit = deployments[index].commit;
+    qDebug() << "Deploying to commit:" << commit;
+
     QStringList arguments;
-    arguments << "rpm-ostree"_L1 << "rollback"_L1;
+    arguments << "rpm-ostree"_L1 << "deploy"_L1 << commit;
 
     QProcess process;
     process.start("pkexec"_L1, arguments);
 
     if (!process.waitForFinished()) {
-        qWarning() << "Rollback process failed:" << process.errorString();
+        qWarning() << "Deploy process failed:" << process.errorString();
         return;
     }
 
@@ -192,6 +197,8 @@ QVariant DeploymentModel::data(const QModelIndex &index, int role) const
             return deployment.isPinned;
         case isDeployed:
             return deployment.isDeployed;
+        case isStaged:
+            return deployment.isStaged;
         case isRollbackTarget:
             // We can rollback to any deployments after the booted deployment
             return index.row() > bootedIdx;
