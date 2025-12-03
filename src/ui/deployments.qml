@@ -52,7 +52,7 @@ Item {
         currentIndex: -1
 
         model: kcm.deploymentModel
-
+        
         Component.onCompleted: {
             console.log("ListView created, model count:", count);
         }
@@ -85,37 +85,43 @@ Item {
                 Item {
                     Layout.preferredWidth: Kirigami.Units.iconSizes.smallMedium
                     Layout.preferredHeight: Kirigami.Units.iconSizes.smallMedium
-                    
+
                     Kirigami.Icon {
                         anchors.centerIn: parent
                         width: Kirigami.Units.iconSizes.smallMedium
                         height: Kirigami.Units.iconSizes.smallMedium
-                        
+
                         source: {
-                            if (model.isDeployed) return "checkmark"
-                            if (model.isStaged) return "arrow-right"
-                            return ""
+                            if (model.isDeployed)
+                                return "checkmark";
+                            if (model.isStaged)
+                                return "arrow-right";
+                            return "";
                         }
-                        
+
                         color: {
-                            if (model.isDeployed) return Kirigami.Theme.positiveTextColor  // Green
-                            if (model.isStaged) return Kirigami.Theme.neutralTextColor    // Blue/Orange
-                            return Kirigami.Theme.textColor
+                            if (model.isDeployed)
+                                return Kirigami.Theme.positiveTextColor;  // Green
+                            if (model.isStaged)
+                                return Kirigami.Theme.neutralTextColor;    // Blue/Orange
+                            return Kirigami.Theme.textColor;
                         }
-                        
+
                         visible: model.isDeployed || model.isStaged
                     }
-                    
+
                     // Tooltip to explain the status
                     Controls.ToolTip {
                         visible: parent.children[0].visible && statusMouseArea.containsMouse
                         text: {
-                            if (model.isDeployed) return i18nc("@info:tooltip", "Currently booted deployment")
-                            if (model.isStaged) return i18nc("@info:tooltip", "Staged for next boot")
-                            return ""
+                            if (model.isDeployed)
+                                return i18nc("@info:tooltip", "Currently booted deployment");
+                            if (model.isStaged)
+                                return i18nc("@info:tooltip", "Staged for next boot");
+                            return "";
                         }
                     }
-                    
+
                     MouseArea {
                         id: statusMouseArea
                         anchors.fill: parent
@@ -168,6 +174,15 @@ Item {
             width: deploymentList.width
 
             text: i18nc("@title:table", "Deployments")
+            actions: [
+                Kirigami.Action {
+                    text: i18nc("@action:button", "Check for Updates")
+                    icon.name: "system-software-update"
+                    onTriggered: kcm.deploymentModel.upgradeSystem()
+                    
+                    tooltip: i18nc("@info:tooltip", "Check for and install system updates")
+                }
+            ]
         }
     }
 

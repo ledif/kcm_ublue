@@ -168,6 +168,24 @@ void DeploymentModel::rollbackToDeployment(int index)
     this->updateDeploymentList();
 }
 
+void DeploymentModel::upgradeSystem()
+{
+    qDebug() << "Starting system upgrade";
+
+    QStringList arguments;
+    arguments << "rpm-ostree"_L1 << "upgrade"_L1;
+
+    QProcess process;
+    process.start("pkexec"_L1, arguments);
+
+    if (!process.waitForFinished()) {
+        qWarning() << "Upgrade process failed:" << process.errorString();
+        return;
+    }
+
+    this->updateDeploymentList();
+}
+
 int DeploymentModel::rowCount(const QModelIndex &parent = QModelIndex()) const
 {
     Q_UNUSED(parent);

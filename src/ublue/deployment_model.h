@@ -1,13 +1,14 @@
 #pragma once
 
 #include <QAbstractListModel>
+#include <QProcess>
 
 namespace UBlue {
 
 class DeploymentModel : public QAbstractListModel
 {
     Q_OBJECT
-    
+
 public:
     explicit DeploymentModel(QObject *parent);
 
@@ -32,6 +33,7 @@ public:
     Q_INVOKABLE void pinOrUnpinDeployment(int index);
     Q_INVOKABLE void rollbackToDeployment(int index);
     Q_INVOKABLE void updateDeploymentList();
+    Q_INVOKABLE void upgradeSystem();
     QHash<int, QByteArray> roleNames() const override;
 
 Q_SIGNALS:
@@ -50,7 +52,6 @@ private:
 
     QList<DeploymentInfo> deployments;
     QHash<int, QByteArray> roles;
-    //QStringList m_deletedSettings; //< track deleted entries
 
     void syncDeploymentConfig(const DeploymentInfo &entry);
 };
