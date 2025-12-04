@@ -16,27 +16,6 @@ K_PLUGIN_CLASS_WITH_JSON(UBlueSettings, "kcm_ublue.json")
 
 QString kTerminalApp = "/usr/bin/kde-ptyxis"_L1;
 
-bool validateConfiguration(ImageVariantInfo* variantInfo)
-{
-  // HWE variants are purposefully only on latest
-  // https://github.com/ublue-os/aurora/issues/114
-  if (variantInfo->getHWEFlags()->hwe && variantInfo->getUpdateStream() != ImageVariantInfo::latest)
-  {
-    QString errorMessage = "Hardware enablement images can only be on the latest stream, not stable."_L1;
-    auto *dlg = new KMessageDialog(KMessageDialog::Information, errorMessage);
-    dlg->setCaption(QStringLiteral("Warning"));
-    dlg->setDetails(QStringLiteral("See https://github.com/ublue-os/aurora/issues/114 for more details."));
-
-    dlg->setAttribute(Qt::WA_DeleteOnClose);
-    dlg->setWindowModality(Qt::WindowModal);
-    dlg->show();
-
-    return false;
-  }
-
-  return true;
-}
-
 UBlueSettings::UBlueSettings(QObject *parent, const KPluginMetaData &data)
     : KQuickConfigModule(parent, data)
     , rebaseManager(new RebaseManager(this))
@@ -59,7 +38,6 @@ void UBlueSettings::load()
 
   connect(this, &UBlueSettings::infoChanged, this, &UBlueSettings::onInfoChanged);
   connect(variantInfo.get(), &ImageVariantInfo::infoChanged, this, &UBlueSettings::onInfoChanged);
-  connect(variantInfo->getHWEFlags(), &HWEFlagSet::infoChanged, this, &UBlueSettings::onInfoChanged);
 
   rebaseManager->tryReload();
 
@@ -69,9 +47,6 @@ void UBlueSettings::load()
 // Called when user clicks 'Apply'
 void UBlueSettings::save()
 {
-  if (!validateConfiguration(variantInfo.get()))
-    return;
-
   // Enable/disable updates if needed
   if (currentUpdatesEnabled != updatesEnabled)
   {

@@ -53,9 +53,9 @@ QString getBootedContainerImageReference() {
 }
 
 
-ImageVariantInfo::ImageVariantInfo(QObject* parent, HWEFlagSet* hweFlags, bool devExperience, UpdateStream updateStream, bool isDeprecatedStream)
+ImageVariantInfo::ImageVariantInfo(QObject* parent, bool nvidiaOpen, bool devExperience, UpdateStream updateStream, bool isDeprecatedStream)
   : QObject(parent)
-  , hweFlags(hweFlags)
+  , nvidiaOpen(nvidiaOpen)
   , devExperience(devExperience)
   , updateStream(updateStream)
   , isDeprecatedStream(isDeprecatedStream)
@@ -64,12 +64,12 @@ ImageVariantInfo::ImageVariantInfo(QObject* parent, HWEFlagSet* hweFlags, bool d
 
 ImageVariantInfo* ImageVariantInfo::clone()
 {
-  return new ImageVariantInfo(nullptr, this->hweFlags->clone(), this->devExperience, this->updateStream, this->isDeprecatedStream);
+  return new ImageVariantInfo(nullptr, this->nvidiaOpen, this->devExperience, this->updateStream, this->isDeprecatedStream);
 }
 
 bool ImageVariantInfo::operator==(const ImageVariantInfo& other) const
 {
-  return *hweFlags == *other.hweFlags && devExperience == other.devExperience && updateStream == other.updateStream;
+  return nvidiaOpen == other.nvidiaOpen && devExperience == other.devExperience && updateStream == other.updateStream;
 }
 
 ImageVariantInfo* ImageVariantInfo::loadFromDisk(QObject* parent)
@@ -97,30 +97,19 @@ ImageVariantInfo* ImageVariantInfo::parseFromImageReference(QObject* parent, con
   else if (imageStream == "latest"_L1)
     updateStream = ImageVariantInfo::latest;
 
-  HWEFlagSet* hweFlags = new HWEFlagSet{false, false, false};
-
-  // HWE flags
-  if (imageName.contains("nvidia"_L1))
-  {
-    if (imageName.contains("nvidia-open"_L1))
-      hweFlags->nvidiaOpen = true;
-    else
-      hweFlags->nvidia = true;
-  }
-
-  if (imageName.contains("hwe"_L1))
-    hweFlags->hwe = true;
+  // NVIDIA Open flag
+  bool nvidiaOpen = imageName.contains("nvidia-open"_L1);
 
   bool isDeprecatedStream = imageName.contains("asus"_L1) || imageName.contains("surface"_L1);
 
   // Dev experience
   bool devExperience = imageName.contains("-dx"_L1);
 
-  return new ImageVariantInfo{parent, hweFlags, devExperience, updateStream, isDeprecatedStream};
+  return new ImageVariantInfo{parent, nvidiaOpen, devExperience, updateStream, isDeprecatedStream};
 }
 
 
-// Create the string representation of this image (e.g., aurora-dx-hwe)
+// Create the string representation of this image (e.g., aurora-dx-nvidia-open)
 QString ImageVariantInfo::asImageNameAndTag() const
 {
   QString image = "aurora"_L1;
@@ -128,13 +117,8 @@ QString ImageVariantInfo::asImageNameAndTag() const
   if (devExperience)
     image += "-dx"_L1;
 
-  if (hweFlags->hwe)
-    image += "-hwe"_L1;
-  if (hweFlags->nvidia)
-    image += "-nvidia"_L1;
-  if (hweFlags->nvidiaOpen)
+  if (nvidiaOpen)
     image += "-nvidia-open"_L1;
-
 
   image += ":"_L1;
   if (updateStream == UpdateStream::stableWeekly)
@@ -152,37 +136,17 @@ bool ImageVariantInfo::getDevExperience() const
   return this->devExperience;
 }
 
+bool ImageVariantInfo::getNvidiaOpen() const
+{
+  return this->nvidiaOpen;
+}
+
 bool ImageVariantInfo::isDeprecated() const
 {
   return this->isDeprecatedStream;
 }
 
-HWEFlagSet* ImageVariantInfo::getHWEFlags()
-{
-  return hweFlags.get();
-}
-
-void ImageVariantInfo::setHWEFlags(HWEFlagSet* x)
-{
-  return hweFlags.reset(x);
-}
-
 ImageVariantInfo::UpdateStream ImageVariantInfo::getUpdateStream()
 {
   return updateStream;
-}
-
-HWEFlagSet::HWEFlagSet(bool hwe, bool nvidia, bool nvidiaOpen)
-  : hwe(hwe), nvidia(nvidia), nvidiaOpen(nvidiaOpen)
-{
-}
-
-HWEFlagSet* HWEFlagSet::clone()
-{
-  return new HWEFlagSet(this->hwe, this->nvidia, this->nvidiaOpen);
-}
-
-bool HWEFlagSet::operator==(const HWEFlagSet& other) const
-{
-  return hwe == other.hwe && nvidia == other.nvidia && nvidiaOpen == other.nvidiaOpen;
 }

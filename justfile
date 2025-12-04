@@ -22,6 +22,12 @@ _containerized-build:
 
   cp -r system/usr/* prefix/usr
 
+temp-install: build
+  #!/bin/bash
+  set -xeu
+  sudo ostree admin unlock || true
+  sudo cp -vr prefix/usr/* /usr
+
 
 release-new-version version:
   #!/bin/bash

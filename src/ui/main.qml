@@ -19,7 +19,7 @@ KCMUtils.SimpleKCM {
   ColumnLayout {
     Kirigami.InlineMessage {
         Layout.fillWidth: true
-        text: "The ASUS and Surface streams have been discontinued. Please migrate to the hardware enablement stream."
+        text: "The ASUS and Surface streams have been discontinued. Please migrate to a supported image."
         type: Kirigami.MessageType.Warning
         visible: kcm.imageVariant.isDeprecatedStream
     }
@@ -175,19 +175,11 @@ KCMUtils.SimpleKCM {
             height: Kirigami.Units.smallSpacing
         }
 
-        signal hweChanged
-        onHweChanged: {
-          console.log("onHWEChanged")
-          kcm.imageVariant.hweFlags.hwe = hweCheckbox.checked
-          kcm.imageVariant.hweFlags.nvidiaOpen = false
-          kcm.imageVariant.hweFlags.nvidia = false
-
-          if (nvidiaCombobox.currentIndex == 0)
-            kcm.imageVariant.hweFlags.nvidiaOpen = true
-          else if (nvidiaCombobox.currentIndex == 1)
-            kcm.imageVariant.hweFlags.nvidia = true
-
-          console.log("new HWEFlags", kcm.imageVariant.hweFlags.hwe, kcm.imageVariant.hweFlags.nvidia, kcm.imageVariant.hweFlags.nvidiaOpen)
+        signal gpuDriverChanged
+        onGpuDriverChanged: {
+          console.log("onGpuDriverChanged")
+          kcm.imageVariant.nvidiaOpen = (nvidiaCombobox.currentIndex == 0)
+          console.log("new nvidiaOpen", kcm.imageVariant.nvidiaOpen)
         }
         RowLayout {
             spacing: Kirigami.Units.mediumSpacing
@@ -195,41 +187,18 @@ KCMUtils.SimpleKCM {
 
             Controls.ComboBox {
               id: nvidiaCombobox
-              model: ["NVIDIA", "NVIDIA (Legacy)", "Intel / AMD"]
+              model: ["NVIDIA", "Intel / AMD"]
               Component.onCompleted: {
-                if (kcm.imageVariant.hweFlags.nvidiaOpen)
+                if (kcm.imageVariant.nvidiaOpen)
                   currentIndex = 0
-                else if (kcm.imageVariant.hweFlags.nvidia)
-                  currentIndex = 1
                 else
-                  currentIndex = 2
+                  currentIndex = 1
               }
-              onActivated: rootLayout.hweChanged()
+              onActivated: rootLayout.gpuDriverChanged()
             }
 
             Kirigami.ContextualHelpButton {
-                toolTipText: xi18nc("@info", "NVIDIA drivers are for modern NVIDIA GPUs including RTX series and GTX 16xx series+. NVIDIA (Legacy) is for older GPUs.")
-            }
-        }
-
-        RowLayout {
-            spacing: Kirigami.Units.mediumSpacing
-          Kirigami.FormData.label: i18n("Hardware enablement:")
-
-          Controls.CheckBox {
-              id: hweCheckbox
-              Kirigami.FormData.label: i18nc("@option:check", "Additional hardware support:")
-              text: i18nc("@option:check", "Handheld compatibility")
-              checked: kcm.imageVariant.hweFlags.hwe
-              onToggled: {
-                rootLayout.hweChanged()
-              }
-
-
-
-          }
-           Kirigami.ContextualHelpButton {
-                toolTipText: xi18nc("@info", "Use Bazzite's kernel which includes additional support for hardware from various vendors, including ASUS, Microsoft Surface, Steam Deck and more.")
+                toolTipText: xi18nc("@info", "NVIDIA drivers are for modern NVIDIA GPUs including RTX series and GTX 16xx series+.")
             }
         }
 
