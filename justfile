@@ -69,8 +69,8 @@ create-ublue-packages-pr version:
 
   branch="kcm_ublue_{{ version }}"
   git checkout -b "$branch"
-  sed -i 's/majmin_ver_kcm [[:digit:]].[[:digit:]].[[:digit:]]/majmin_ver_kcm {{ version }}/' ublue/kcm_ublue/kcm_ublue.spec
-  git add ublue/kcm_ublue/kcm_ublue.spec
+  sed -i 's/majmin_ver_kcm [[:digit:]].[[:digit:]].[[:digit:]]/majmin_ver_kcm {{ version }}/' packages/kcm_ublue/kcm_ublue.spec
+  git add packages/kcm_ublue/kcm_ublue.spec
   git commit -m "chore: bump kcm_ublue to {{ version }}"
   git push origin "$branch"
-  gh pr create --title "chore: bump kcm_ublue to {{ version }}" --body $notes
+  gh pr create --title "chore: bump kcm_ublue to {{ version }}" --body "$notes"
